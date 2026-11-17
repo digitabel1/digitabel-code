@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personvernerklæring – DigitAbel Code</title>
+
+<link rel="icon" type="image/png" href="/img/icon-192x192.png">
+<link rel="apple-touch-icon" href="/img/icon-192x192.png">
+
+<style>
+    :root {
+        color-scheme: light dark;
+        --bg: #f7f7f7;
+        --card-bg: #ffffff;
+        --text: #222;
+        --muted: #555;
+        --accent: #1a7a2e;
+        --border: #e0e0e0;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #1e1f22;
+            --card-bg: #282a36;
+            --text: #eee;
+            --muted: #b3b3b3;
+            --accent: #8be9fd;
+            --border: #3a3c40;
+        }
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+    }
+    header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--border);
+        background: var(--card-bg);
+    }
+    header img { height: 48px; }
+    header a.brand { text-decoration: none; color: inherit; display: flex; align-items: center; gap: 12px; }
+    header h1 { font-size: 18px; margin: 0; color: var(--muted); font-weight: normal; }
+    picture.logo-light { display: block; }
+    picture.logo-dark { display: none; }
+    @media (prefers-color-scheme: dark) {
+        picture.logo-light { display: none; }
+        picture.logo-dark { display: block; }
+    }
+    main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 32px 24px 64px;
+    }
+    h2 {
+        margin-top: 40px;
+        font-size: 20px;
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 6px;
+    }
+    h2:first-of-type { margin-top: 8px; }
+    p, li { color: var(--text); }
+    .lead {
+        font-size: 15px;
+        color: var(--muted);
+        margin-top: 4px;
+    }
+    .summary-box {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--accent);
+        border-radius: 4px;
+        padding: 16px 20px;
+        margin: 20px 0 32px;
+    }
+    .summary-box ul { margin: 8px 0 0; padding-left: 20px; }
+    a { color: var(--accent); }
+    code {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 1px 5px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9em;
+    }
+    footer {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 24px 40px;
+        font-size: 13px;
+        color: var(--muted);
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <a class="brand" href="https://digitabel.org" target="_blank" rel="noopener">
+        <picture class="logo-light"><img src="/img/logo_100_trans.png" alt="DigitAbel"></picture>
+        <picture class="logo-dark"><img src="/img/logo_100_trans_white.png" alt="DigitAbel"></picture>
+    </a>
+    <h1>DigitAbel Code</h1>
+</header>
+
+<main>
+    <h2 style="margin-top:0;">Personvernerklæring</h2>
+    <p class="lead">Gjelder DigitAbel Code (Python-editoren på <code>/</code> og Turtle-editoren på <code>/turtle/</code>).</p>
+
+    <div class="summary-box">
+        <strong>Kort oppsummert:</strong>
+        <ul>
+            <li>Du trenger ikke opprette konto, logge inn, eller oppgi navn eller e-post for å bruke DigitAbel Code.</li>
+            <li>Vi lagrer anonym bruksstatistikk (tidspunkt, type hendelse, en grov enhetstype og hvilken side) – ikke IP-adresse eller andre personlige identifikatorer.</li>
+            <li>Koden du skriver, temavalg og lignende lagres kun lokalt i din egen nettleser, og sendes ikke til oss – med unntak av at du selv kan velge å dele koden din via en delelenke.</li>
+        </ul>
+    </div>
+
+    <h2>Hvem er ansvarlig</h2>
+    <p>DigitAbel Code driftes av <a href="https://digitabel.org" target="_blank" rel="noopener">DigitAbel.org</a>, som er
+    dataansvarlig for behandlingen beskrevet her. Har du spørsmål, gå til våre
+    <a href="https://digitabel.org/om-digitabel/kontakt/" target="_blank" rel="noopener">kontakt-sider</a>.</p>
+
+    <h2>Bruksstatistikk</h2>
+    <p>For å forstå hvordan DigitAbel Code brukes, og for å kunne forbedre tjenesten, registrerer vi enkelte
+    hendelser – som sidevisninger, at koden kjøres, og at appen installeres som PWA. For hver hendelse lagres:</p>
+    <ul>
+        <li>Tidspunkt for hendelsen</li>
+        <li>Hvilken type hendelse det er (f.eks. sidevisning eller kodekjøring)</li>
+        <li>En grov enhets-/operativsystem-etikett (f.eks. «Windows», «Android», «iOS») – ikke hele nettleserens fulle
+            identifikasjonsstreng</li>
+        <li>Hvilken side/del av appen hendelsen skjedde på</li>
+    </ul>
+    <p>Vi lagrer <strong>ikke</strong> IP-adresse eller andre identifikatorer sammen med disse hendelsene, og de kan
+    ikke kobles til en bestemt person. Loggene lagres i enkle tekstfiler på serveren (én fil per måned) og fjernes
+    ikke automatisk.</p>
+    <p><em>Merk:</em> webserveren som drifter siden kan, uavhengig av dette, føre egne tekniske tilgangslogger (f.eks.
+    IP-adresse) som del av normal drift og sikkerhet – dette er ikke noe DigitAbel Code selv styrer eller bruker til
+    annet enn feilsøking/sikkerhet ved behov. Se «Hosting» nedenfor for detaljer.</p>
+
+    <h2>Lokal lagring i nettleseren</h2>
+    <p>Følgende lagres kun lokalt i din nettleser (<code>localStorage</code>), og sendes aldri til oss:</p>
+    <ul>
+        <li>Valg av lyst/mørkt tema</li>
+        <li>Om autofullføring er på eller av</li>
+        <li>Automatisk mellomlagring av koden din i hovededitoren, slik at du ikke mister arbeidet ditt ved et uhell</li>
+    </ul>
+    <p>Denne informasjonen ligger kun på enheten du bruker, og forsvinner hvis du sletter nettleserdata for siden.</p>
+
+    <h2>Delelenker</h2>
+    <p>Hvis du bruker «del»-funksjonen, kodes koden din inn i selve nettadressen (URL-en). Dette skjer i din egen
+    nettleser – koden lagres ikke hos oss. Alle som får lenken av deg, kan åpne og se koden, så del kun lenker du selv
+    ønsker å dele.</p>
+
+    <h2>Tredjepartstjenester</h2>
+    <p>Siden laster noen ressurser (skrifttyper, ikoner og programvarebiblioteker som Pyodide, Skulpt og CodeMirror)
+    fra eksterne CDN-tjenester (bl.a. Google Fonts, Cloudflare og jsDelivr). Disse tjenestene kan se IP-adressen til
+    din nettleser når ressursene lastes, på samme måte som ved besøk på de fleste nettsider. DigitAbel Code bruker
+    ingen analyse- eller annonseverktøy fra tredjeparter, og deler ikke opplysninger om deg med disse tjenestene.</p>
+
+    <h2>Hosting</h2>
+    <p>DigitAbel Code kjøres på servere hos vår driftsleverandør <strong>Domeneshop AS</strong> (org.nr. 930834408).
+    Domeneshop er databehandler for oss når det gjelder hosting og domene, og fører – som del av sin normale drift og
+    uavhengig av bruksstatistikken beskrevet over – egne tekniske logger (f.eks. web- og e-postserverlogger med
+    IP-adresse, tidspunkt og HTTP-headere). DigitAbel Code har ikke tilgang til og bruker ikke disse loggene selv.
+    Du finner mer informasjon i Domeneshops egen personvernerklæring, og en oversikt over deres underleverandører på
+    <a href="https://domeneshop.no/suppliers" target="_blank" rel="noopener">domeneshop.no/suppliers</a>. Spørsmål om
+    den hostingrelaterte databehandlingen kan rettes til Domeneshop via
+    <a href="https://domeneshop.no/contact" target="_blank" rel="noopener">domeneshop.no/contact</a>.</p>
+
+    <h2>Bruk i skole</h2>
+    <p>DigitAbel Code kan brukes fritt av elever og lærere uten registrering. Representerer du en skole eller
+    skoleeier og har behov for en databehandleravtale eller mer informasjon om databehandlingen, ta gjerne kontakt
+    via <a href="https://digitabel.org/om-digitabel/kontakt/" target="_blank" rel="noopener">kontakt-sidene våre</a>.</p>
+
+    <h2>Dine rettigheter</h2>
+    <p>Siden vi ikke samler inn opplysninger som kan identifisere deg som person, har vi normalt ingen data å vise
+    innsyn i, rette eller slette knyttet til deg spesifikt. Har du likevel spørsmål om personvern knyttet til
+    DigitAbel Code, eller mener du at vi behandler opplysninger om deg i strid med regelverket, kan du kontakte oss
+    via lenken over, eller klage til <a href="https://www.datatilsynet.no" target="_blank" rel="noopener">Datatilsynet</a>.</p>
+
+    <h2>Endringer</h2>
+    <p>Vi kan oppdatere denne personvernerklæringen ved endringer i tjenesten. Sist oppdatert: <strong>14. oktober 2026</strong>.</p>
+</main>
+
+<footer>
+    <p><a href="/">Tilbake til DigitAbel Code</a> · <a href="/turtle/">Turtle-editoren</a></p>
+</footer>
+
+</body>
+</html>

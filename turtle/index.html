@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<title>turtle.Code - DigitAbels turtle-editor</title>
+
+<link rel="icon" type="image/png" href="/img/icon-192x192.png">
+<link rel="apple-touch-icon" href="/img/icon-192x192.png">
+
+<!-- CodeMirror -->
+<link rel="stylesheet" href="/codemirror/codemirror.min.css">
+<link rel="stylesheet" href="/codemirror/theme/dracula.min.css">
+<link rel="stylesheet" href="/codemirror/theme/eclipse.min.css">
+<script src="/codemirror/codemirror.min.js"></script>
+<script src="/codemirror/mode/python/python.min.js"></script>
+<script src="/codemirror/addon/edit/matchbrackets.min.js"></script>
+<script src="/codemirror/addon/edit/closebrackets.min.js"></script>
+<script src="/codemirror/addon/selection/active-line.min.js"></script>
+<link rel="stylesheet" href="/codemirror/addon/hint/show-hint.min.css">
+<script src="/codemirror/addon/hint/show-hint.min.js"></script>
+<script src="/codemirror/addon/hint/python-hint.min.js"></script>
+<link rel="stylesheet" href="/codemirror/addon/fold/foldgutter.min.css">
+<script src="/codemirror/addon/fold/foldcode.min.js"></script>
+<script src="/codemirror/addon/fold/foldgutter.min.js"></script>
+<script src="/codemirror/addon/fold/indent-fold.min.js"></script>
+
+<!-- Fonter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Skulpt (Python-tolk med turtle-støtte) -->
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="light">
+
+<!-- Info-modal -->
+<div id="info-modal" class="modal">
+    <div class="modal-content">
+        <h2 style="font-family: Conthrax; font-size: 40px; margin: 0;">turtle.Code</h2>
+        <h3 style="margin-top: 5px;">Tegn med Python Turtle</h3>
+        <p>turtle.Code er en enkel editor for å lære programmering med pythons turtle-grafikk.
+           Skriv kode i editoren til venstre, klikk <strong>Kjør</strong>, og se skilpadden tegne på tegneflaten til høyre!</p>
+        <p style="font-size: 0.9em; color: #555;">Merk: TurtlEd bruker Skulpt, som støtter standard turtle-kommandoer.
+           Noen avanserte funksjoner fra nyere Python er ikke tilgjengelige.</p>
+        <h4>Tastatursnarveier:</h4>
+        <div class="shortcut-list">
+            <span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> → Kjør kode</span>
+            <span><kbd>Ctrl</kbd> + <kbd>S</kbd> → Lagre som .py-fil</span>
+            <span><kbd>Ctrl</kbd> + <kbd>O</kbd> → Åpne .py-fil</span>
+            <span><kbd>Ctrl</kbd> + <kbd>Z</kbd> → Angre</span>
+        </div>
+        <p style="font-size: 12px;">
+            TurtlEd er laget av <a href="https://digitabel.org/" class="modal-link">digitabel.org</a>,
+            med hjelp av <a href="https://skulpt.org/" class="modal-link">Skulpt</a> og
+            <a href="https://codemirror.net/" class="modal-link">CodeMirror</a>. Har du en tilbakemelding, eller ønsker
+            å kontakte oss, gå til våre <a href="https://digitabel.org/om-digitabel/kontakt/" class="modal-link">kontakt-sider</a>.
+            Les også vår <a href="/personvern.html" class="modal-link">personvernerklæring</a>.
+        </p>
+        <button class="close-btn" onclick="closeModal('info-modal')">Lukk</button>
+    </div>
+</div>
+
+<!-- Eksempler-modal -->
+<div id="examples-modal" class="modal">
+    <div class="modal-content">
+        <h2>Velg et eksempel</h2>
+        <table style="width: 100%; text-align: center; font-size: 18px; border-spacing: 6px;">
+            <tr>
+                <th>Grunnleggende</th>
+                <th>Former</th>
+                <th>Mønstre</th>
+                <th>Labyrinter</th>
+            </tr>
+            <tr>
+                <td><button onclick="loadExample('firkant')">Firkant</button></td>
+                <td><button onclick="loadExample('stjerne')">Stjerne</button></td>
+                <td><button onclick="loadExample('spiral')">Spiral</button></td>
+                <td><button onclick="loadExample('labyrint1')">Labyrint 1</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="loadExample('trekant')">Trekant</button></td>
+                <td><button onclick="loadExample('sirkel')">Sirkel</button></td>
+                <td><button onclick="loadExample('regnbue')">Regnbue</button></td>
+                <td><button onclick="loadExample('labyrint2')">Labyrint 2</button></td>
+            </tr>
+            <tr>
+                <td><button onclick="loadExample('polygon')">Polygon</button></td>
+                <td><button onclick="loadExample('blomst')">Blomst</button></td>
+                <td><button onclick="loadExample('kvadrater')">Kvadrater</button></td>
+                <td><button onclick="loadExample('labyrint3')">Labyrint 3</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><button onclick="loadExample('labyrint4')">Labyrint 4</button></td>
+            </tr>
+        </table>
+        <button class="close-btn" onclick="closeModal('examples-modal')">Lukk</button>
+    </div>
+</div>
+
+<!-- VERKTØY-rad (samme oppsett som hovededitoren) -->
+<div class="topframe">
+<!-- LOGO + OVERSKRIFT -->
+<div class="brand">
+    <a href="https://digitabel.org" target="_blank" rel="noopener">
+        <img id="logo_light" src="/img/logo_100_trans.png" alt="DigitAbel" style="display: block;">
+        <img id="logo_dark" src="/img/logo_100_trans_white.png" alt="DigitAbel" style="display: none;">
+    </a>
+    <div id="banner-light" class="banner"><p id="head1_light">turtle.Code</p></div>
+    <div id="banner-dark" class="banner" style="display: none;"><p id="head1_dark">turtle.Code</p></div>
+</div>
+<span class="toolbar-divider"></span>
+<div id="toolbar">
+    <a class="toolbar-btn" href="/turtle/" target="_blank" rel="noopener" title="Nytt vindu"><i class="fa-regular fa-file"></i><span class="btn-label">Ny</span></a>
+    <button onclick="openFile()" title="Åpne .py-fil (Ctrl+O)"><i class="fa-regular fa-folder-open"></i><span class="btn-label">Åpne</span></button>
+    <button onclick="saveCode()" title="Lagre som .py-fil (Ctrl+S)"><i class="fa-regular fa-floppy-disk"></i><span class="btn-label">Lagre</span></button>
+    <span class="toolbar-divider"></span>
+    <button onclick="editor.undo(); editor.focus();" title="Angre (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i><span class="btn-label">Angre</span></button>
+    <span class="toolbar-divider"></span>
+    <label class="toolbar-btn toolbar-select" title="Skriftstørrelse">
+    <select id="fontSizeSelect" onchange="setFontSize(this.value)" title="Skriftstørrelse">
+        <option value="12">12</option>
+        <option value="14">14</option>
+        <option value="16" selected>16</option>
+        <option value="18">18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+        <option value="28">28</option>
+        <option value="32">32</option>
+    </select>
+    <span class="btn-label">Skrift</span>
+    </label>
+    <button onclick="toggleTheme()" title="Bytt tema"><i class="fa-solid fa-moon"></i><span class="btn-label">Tema</span></button>
+    <span class="toolbar-divider"></span>
+    <button onclick="shareCode()" title="Del kode"><i class="fa-solid fa-share"></i><span class="btn-label">Del</span></button>
+    <button onclick="openModal('examples-modal')" title="Kodeeksempler"><i class="fa-solid fa-code"></i><span class="btn-label">Eks</span></button>
+    <button id="autocomplete-toggle" title="Kodehjelp av/på"><i class="fa-solid fa-lightbulb"></i><span class="btn-label">Hjelp</span></button>
+    <button id="info-button" onclick="openModal('info-modal')" title="Informasjon"><i class="fas fa-info-circle"></i><span class="btn-label">Info</span></button>
+    <span class="toolbar-divider"></span>
+</div>
+<!-- KJØR-knapp helt til høyre i topframe (#toolbar har flex: 1 og skyver den ut) -->
+<button title="Kjør kode (Ctrl+Enter)" onclick="runPython()" id="run-button"><i class="fas fa-play"></i><span class="btn-label">Kjør</span></button>
+</div>
+
+<!-- Hoved-layout -->
+<div class="main-area">
+
+    <!-- Editor -->
+    <div class="editor-wrapper">
+        <textarea id="code">from turtle import *
+
+geir = Turtle()
+geir.shape("turtle")
+geir.speed(4)
+geir.pensize(15)
+geir.pencolor("orange")
+geir.penup()
+geir.goto(-129, -24)
+
+geir.pendown()
+geir.goto(-100, -50)
+geir.penup()
+geir.goto(-62, -92)
+geir.pendown()
+geir.goto(0,-150)
+geir.goto(128, -25)
+geir.penup()
+geir.goto(129, 80)
+geir.pendown()
+geir.goto(102, 110)
+geir.penup()
+geir.goto(64, 146)
+geir.pendown()
+geir.goto(0,213)
+geir.goto(-129, 80)
+
+geir.pencolor("blue")
+geir.penup()
+geir.goto(-200, -22)
+geir.pendown()
+geir.goto(-200, -70)
+geir.goto(55, -70)
+geir.penup()
+geir.goto(108, -70)
+geir.pendown()
+geir.goto(198, -70)
+geir.goto(200, -22)
+geir.penup()
+geir.goto(200, 80)
+geir.pendown()
+geir.goto(200, 129)
+geir.goto(-55, 129)
+geir.penup()
+geir.goto(-110, 129)
+geir.pendown()
+geir.goto(-198, 129)
+geir.goto(-198, 80)
+
+geir.pencolor("black")
+geir.penup()
+geir.goto(-238, 3)
+geir.write("DigitAbel", font=('Conthrax', 65))
+geir.goto(-68, -38)
+geir.write(".org", font=('Conthrax', 45))
+
+geir.goto(0,-200)
+geir.left(90)
+</textarea>
+        <button onclick="clearEditor()" title="Tøm editor"
+                class="corner-button clear-button" style="bottom:10px;">
+            <i class="fas fa-trash"></i>
+        </button>
+    </div>
+
+    <!-- Canvas -->
+    <div class="canvas-wrapper">
+        <div id="turtle-canvas"></div>
+    </div>
+
+</div>
+
+<!-- Status / feilmelding -->
+<div id="status-message"></div>
+
+<!-- Output (print-setninger) -->
+<div class="output-wrapper">
+    <div id="output-welcome">
+        <img id="output-welcome-logo-light" src="/img/digitabel-kongsberg.png" alt="DigitAbel Code" style="display: block;">
+        <img id="output-welcome-logo-dark" src="/img/digitabel-kongsberg_dark.png" alt="DigitAbel Code" style="display: none;">
+        <p>Skriv koden din i feltet over, og trykk på "Kjør"-knappen (eller Ctrl+Enter)<br><br>
+            turtle.Code leveres av Kongsberg Gruppen og er utviklet av digitabel.org for å gi elever i
+            grunnskolen et verktøy de kan bruke til å arbeide med kompetansemål knyttet til programmering.</p>
+    </div>
+    <pre id="output" style="min-height: 40px;"></pre>
+</div>
+
+<input type="file" id="fileInput" accept=".py" style="display:none">
+
+<script src="script.js"></script>
+
+<!-- Kobling som kreves for PWA -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("/sw.js", {
+        scope: "/"
+      })
+      .then((registration) => {
+        console.log("ServiceWorker registrert med suksess!");
+      })
+      .catch((error) => {
+        console.error("Feil ved registrering av ServiceWorker:", error);
+      });
+    });
+  }
+</script>
+</body>
+</html>

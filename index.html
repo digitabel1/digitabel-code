@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<title>DigitAbel Code - Python-editor</title>
+
+<!-- Favicon (absolutt sti) -->
+<link rel="icon" type="image/png" href="/img/icon-192x192.png">
+<!-- Apple Touch Icon (absolutt sti) -->
+<link rel="apple-touch-icon" href="/img/icon-192x192.png">
+
+<!-- CodeMirror -->
+<link rel="stylesheet" href="/codemirror/codemirror.min.css">
+<link rel="stylesheet" href="/codemirror/theme/dracula.min.css">
+<link rel="stylesheet" href="/codemirror/theme/eclipse.min.css">
+<script src="/codemirror/codemirror.min.js"></script>
+<script src="/codemirror/mode/python/python.min.js"></script>
+<script src="/codemirror/addon/edit/matchbrackets.min.js"></script>
+<script src="/codemirror/addon/edit/closebrackets.min.js"></script>
+<script src="/codemirror/addon/selection/active-line.min.js"></script>
+<link rel="stylesheet" href="/codemirror/addon/hint/show-hint.min.css">
+<script src="/codemirror/addon/hint/show-hint.min.js"></script>
+<script src="/codemirror/addon/hint/python-hint.min.js"></script>
+<link rel="stylesheet" href="/codemirror/addon/fold/foldgutter.min.css">
+<script src="/codemirror/addon/fold/foldcode.min.js"></script>
+<script src="/codemirror/addon/fold/foldgutter.min.js"></script>
+<script src="/codemirror/addon/fold/indent-fold.min.js"></script>
+
+<!-- Fonter-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Pyodide (v0.25.0, ligger på egen server så skoler som sperrer CDN-er også får Python).
+     Pakker som ikke ligger i /pyodide/ hentes fra jsdelivr via absolutte URL-er i pyodide-lock.json -->
+<script src="/pyodide/pyodide.js"></script>
+
+<!-- Kobling til CSS-->
+<link rel="stylesheet" href="/css/pyted.css">
+
+<!-- Kobling som kreves for PWA -->
+<link rel="manifest" href="/manifest.json">
+
+</head>
+
+<!-- BODY -->
+<body class="light">
+
+<!-- BETA 
+<img id="imgbeta" src="img/beta.png">
+-->
+
+<!-- LOGO RIGHT-->
+<!--
+<a href="https://digitabel.org" target="_blank"> 
+    <img id="logo_light" src="img/logo_100_trans.png" style="display: block; z-index: 1000;">
+</a>
+<a href="https://digitabel.org" target="_blank">
+<img id="logo_dark" src="img/logo_100_trans_white.png" style="display: none; z-index: 1000;">
+</a>
+-->
+
+<!-- INFO-modal -->
+<div id="shortcut-modal" class="modal">
+    <div class="modal-content">
+        <table style="width: 780px;">
+            <tr>
+                <td><h2 id="popinfo_head">DigitAbel Code</h2>
+                    <h3>Skriv og kjør python på nett</h3>
+                    <p style="margin-top: -20px; font-weight: 700; font-size: 0.83em;">v0.63</p>
+                </td>
+                <td style="text-align: right;">
+                    <img src="img/logo_200_trans.png" class="modal-logo-light" alt="DigitAbel" style="width: 150px; margin-top: -25px;">
+                    <img src="img/logo_100_trans_white.png" class="modal-logo-dark" alt="DigitAbel" style="width: 150px; margin-top: -25px; display: none;">
+                </td>
+            </tr>
+        </table>
+        
+        <p id="popinfo">DigitAbel Code gir elever i grunnskolen et enkelt sted å skrive og kjøre egen Python-kode
+            direkte i nettleseren – uten installasjon eller oppsett. Biblioteker som NumPy og Matplotlib
+            følger med, slik at elevene også kan utforske beregninger, visualisering og programmering
+            med kraftige verktøy.<br>Tjenesten er laget av DigitAbel.org som et supplement til de andre ressursene våre.
+            DigitAbel Code skal være en lett tilgjengelig læringsarena – ikke en fullverdig erstatning for
+            utviklingsmiljøer som Thonny, Visual Studio Code eller Jupyter.
+        </p>
+        <h4>Tastatursnarveier:</h4>
+        <div class="shortcut-columns">
+            <div class="shortcut-list">
+                <span><kbd>Ctrl</kbd> + <kbd>Enter</kbd> → Kjør</span>
+                <span><kbd>Ctrl</kbd> + <kbd>O</kbd> → Åpne</span>
+            </div>
+            <div class="shortcut-list">
+                <span><kbd>Ctrl</kbd> + <kbd>S</kbd> → Lagre</span>
+                <span><kbd>Ctrl</kbd> + <kbd>Z</kbd> → Angre</span>
+            </div>
+            <div class="shortcut-list">
+                <span><kbd>Ctrl</kbd> + <kbd>+</kbd> → Zoom inn</span>
+                <span><kbd>Ctrl</kbd> + <kbd>-</kbd> → Zoom ut</span>
+            </div>
+        </div>
+        <table style="width: 100%;">
+            <tr>
+                <td>
+                    <button id="checkForUpdatesBtn" class="update-btn">Oppdater DigitAbel Code</button>
+                    <button id="installAppBtn" class="update-btn" style="display:none;">Installer app</button>
+                </td>
+                <td style="text-align: right;"><button id="close-modal">Lukk</button></td>
+            </tr>
+        </table>
+        
+        
+        <p style="font-size: 12px;">
+            DigitAbel Code er laget av <a href="https://digitabel.org/" class="modal-link">digitabel.org</a>, med hjelp av opensource-programmene
+             <a href="https://pyodide.org/en/stable/#" class="modal-link">pyodide</a> og
+              <a href="https://codemirror.net/" class="modal-link">codemirror</a>. Har du en tilbakemelding, eller ønsker
+              å kontakte oss, gå til våre <a href="https://digitabel.org/om-digitabel/kontakt/" class="modal-link">kontakt-sider</a>.
+              Les også vår <a href="/personvern.html" class="modal-link">personvernerklæring</a>.
+        </p>
+    </div>
+</div>
+
+<!-- EKSEMPLER-modal -->
+ <div id="examples-modal" class="modal">
+    <div class="modal-content">
+        <!--<span id="close-examples-modal" class="close">&times;</span>-->
+        <h2>Velg et kodeeksempel</h2>
+        <div id="examples-tabs" role="tablist"></div>
+        <div id="examples-grid"></div>
+        <button id="close-examples-modal" style="background-color: #ffb86c; color: #282a36;">Lukk</button>
+    </div>
+</div>
+
+<!-- LASTER-side -->
+<div id="loading">
+    <img src="img/logo_100_trans_white.png">
+    <div class="loading-title">DigitAbel Code</div>
+    <div style="margin: 1em 0;"><i class="fa-solid fa-hourglass"></i> Laster Python-miljø for DigitAbel Code 0.63</div>
+    <!-- Fylles av showLoadingProblem() i js/pyted.js hvis lastingen er treg eller feiler -->
+    <div id="loading-problem" style="display: none;">
+        <p id="loading-problem-text"></p>
+        <button id="loading-retry" onclick="location.reload()">Prøv igjen</button>
+    </div>
+</div>
+
+<!-- VERKTØY-rad -->
+ <div class="topframe">
+<!-- LOGO + OVERSKRIFT -->
+<div class="brand">
+    <a href="https://digitabel.org" target="_blank" rel="noopener">
+        <img id="logo_code_light" src="img/logo_100_trans.png" alt="DigitAbel Code" style="display: block;">
+        <img id="logo_code_dark" src="img/logo_100_trans_white.png" alt="DigitAbel Code" style="display: none;">
+    </a>
+    <div id="banner-light" class="banner"><p id="head1_light">Code</p></div>
+    <div id="banner-dark" class="banner" style="display: none;"><p id="head1_dark">Code</p></div>
+</div>
+<span class="toolbar-divider"></span>
+<div id="toolbar" style="text-align: left;">
+    <a class="toolbar-btn" href="https://code.digitabel.org/" target="_blank" rel="noopener" title="Nytt vindu"><i class="fa-regular fa-file" style="text-decoration: none; color: white;">  </i><span class="btn-label">Ny</span></a>
+    <button onclick="openFile()" title="Åpne (Ctrl+O)"><i class="fa-regular fa-folder-open"></i><span class="btn-label">Åpne</span></button>
+    <button onclick="saveCode()" title="Lagre (Ctrl+S)"><i class="fa-regular fa-floppy-disk"></i><span class="btn-label">Lagre</span></button>
+    <span class="toolbar-divider"></span>
+    <button id="undo-button" title="Angre (Ctrl+Z)" onclick="undoEditor()"><i class="fa-solid fa-rotate-left"></i><span class="btn-label">Angre</span></button>
+    <span class="toolbar-divider"></span>
+    <label class="toolbar-btn toolbar-select" title="Skriftstørrelse">
+    <select id="fontSizeSelect" onchange="fontSize(this.value)" title="Skriftstørrelse">
+        <option value="12">12</option>
+        <option value="14">14</option>
+        <option value="16">16</option>
+        <option value="18" selected>18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+        <option value="28">28</option>
+        <option value="32">32</option>
+    </select>
+    <span class="btn-label">Skrift</span>
+    </label>
+    <button id="theme-toggle" title="Bytt tema" class="theme-button"><i class="fa-solid fa-moon"></i><span class="btn-label">Tema</span></button>
+    <span class="toolbar-divider"></span>
+    <button id="share-button" title="Del kode"><i class="fa-solid fa-share"></i><span class="btn-label">Del</span></button>
+    <button id="examples-button" title="Kodeeksempler"><i class="fa-solid fa-code"> </i><span class="btn-label">Eks</span></button>
+    <button id="autocomplete-toggle" title="Kodehjelp av/på"><i class="fa-solid fa-lightbulb"></i><span class="btn-label">Hjelp</span></button>
+    <button id="turtle-button" onclick="åpneTurtle()" title="Turtle-editor (ny fane)"><span class="turtle-icon"><img src="img/turtle-icon.png" class="turtle-img" alt="" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square turtle-ext" aria-hidden="true"></i></span><span class="btn-label">Turtle</span></button>
+    <button id="info-button" title="Informasjon"><i class="fas fa-info-circle"></i><span class="btn-label">Info</span></button>
+    <span class="toolbar-divider"></span>
+</div>
+<!-- KJØR-knapp helt til høyre i topframe (#toolbar har flex: 1 og skyver den ut) -->
+<button title="Kjør kode (Ctrl+Enter)" onclick="runPython()" id="run-button"><i class="fas fa-play"></i><span class="btn-label">Kjør</span></button>
+</div>
+
+<!-- EDITOR -->
+<div class="editor-wrapper">
+    <textarea id="code"># DigitAbel Code - python editor rett i nettleseren
+lengde = 12
+bredde = 18
+areal = lengde * bredde
+omkrets = 2 * (lengde + bredde)
+print("Areal:", areal, "    Omkrets:", omkrets)
+</textarea>
+    <button title="Fjern alt" onclick="clearEditor()" id="tom_editor" class="corner-button clear-button" style="bottom: 12px;">
+        <i class="fas fa-trash"></i>
+    </button>
+</div>
+<div id="editor-resize-handle" class="editor-resize-handle" title="Dra for å endre høyden på editoren"></div>
+
+<!-- KJØRÆR-spinner -->
+<div id="loading-indicator" style="display: none;">
+  <span class="spinner"></span> <span id="loading-text">Kjører kode...</span>
+</div>
+
+<input type="file" id="fileInput" accept=".py" style="display:none">
+
+<!-- PLOT-vindu -->
+<div id="plot"></div>
+
+<!-- FJERN-knapp fra output -->
+<div class="output-wrapper">
+    <button title="Fjern alt" onclick="clearOutput()" id="clear-output-button" class="corner-button clear-button" style="bottom: 12px;">
+        <i class="fas fa-trash"></i></button>
+    <div id="output-welcome">
+        <img id="output-welcome-logo-light" src="/img/digitabel-kongsberg.png" alt="DigitAbel Code" style="display: block;">
+        <img id="output-welcome-logo-dark" src="/img/digitabel-kongsberg_dark.png" alt="DigitAbel Code" style="display: none;">
+        <p>Skriv koden din i feltet over, og trykk på "Kjør"-knappen (eller Ctrl+Enter)<br><br>DigitAbel Code er utviklet 
+            av DigitAbel.org med støtte fra Kongsberg Gruppen og er et åpent programmeringsverktøy for elever i grunnskolen.
+        <br><br>Besøk digitabel.org for flere aktiviteter i programmering og matematikk.</p>
+    </div>
+    <pre id="output" style="min-height: 50px;"><br>
+    </pre>
+</div>
+
+<!-- Elevtilpasset tilbakemelding -->
+<div id="error-message"></div>
+
+<!-- Kobling til JS-->
+<script src="/js/log.js"></script>
+<script src="/js/pyted.js"></script>
+<script src="/js/errorTranslations.js"></script>
+<script src="/js/loadSelectedExample.js"></script>
+<script src="/js/eksempler/trinn5.js"></script>
+<script src="/js/eksempler/trinn6.js"></script>
+<script src="/js/eksempler/trinn7.js"></script>
+<script src="/js/eksempler/trinn8.js"></script>
+<script src="/js/eksempler/trinn9.js"></script>
+<script src="/js/eksempler/trinn10.js"></script>
+<script src="/js/eksempler/mer.js"></script>
+<script src="/js/functions.js"></script>
+
+</body>
+</html>

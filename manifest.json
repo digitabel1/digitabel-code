@@ -1,0 +1,49 @@
+{
+  "id": "/",
+  "name": "DigitAbel Code",
+  "short_name": "Code",
+  "description": "En Python-editor for elever",
+  "lang": "nb",
+  "categories": ["education"],
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c3e50",
+  "icons": [
+    {
+      "src": "img/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "img/code.png",
+      "sizes": "1594x980",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "DigitAbel Code Python-editor"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Turtle-editor",
+      "short_name": "Turtle",
+      "description": "Åpne turtle-grafikk-editoren",
+      "url": "/turtle/",
+      "icons": [
+        {
+          "src": "img/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

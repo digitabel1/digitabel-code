@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitAbel Code Statistikk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            margin: 5px 0;
+        }
+        .last30-row td {
+            border-top: 2px solid #999;
+            font-weight: bold;
+        }
+        details.archived > summary {
+            cursor: pointer;
+            color: #2a78d6;
+            text-decoration: underline;
+        }
+        .month-link {
+            color: #2a78d6;
+        }
+        tr.selected-month td {
+            background-color: #e8f1fb;
+        }
+        .chart-block {
+            margin: 20px 0;
+        }
+        .chart-container {
+            position: relative;
+            background: #fcfcfb;
+            border: 1px solid #e1e0d9;
+            border-radius: 5px;
+            padding: 10px 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>DigitAbel Code Statistikk</h1>
+
+    <details class="summary archived">
+        <summary>Vis arkiverte data (mai–august 2026)</summary>
+        <h2>Arkivert: Mai–August 2026</h2>
+        <p><em>Disse tallene er fra før månedlige loggfiler (<code>log/&lt;år&gt;/&lt;måned&gt;.txt</code>) ble
+        innført i september 2026, og ble talt opp manuelt før de tilhørende loggradene ble slettet fra den
+        gamle <code>pyted_logs.txt</code>. Måneder fra og med september 2026 telles automatisk fra loggfilene
+        under, og legges ikke lenger inn her manuelt.</em></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Måned</th>
+                    <th>Sidevisninger</th>
+                    <th>PWA installert</th>
+                    <th>Python-kjøringer</th>
+                    <th>Turtle-kjøringer</th>
+                </tr>
+            </thead>
+            <tbody id="archivedBody">
+                <tr>
+                    <td>Mai-26</td>
+                    <td>1&nbsp;355</td>
+                    <td>64</td>
+                    <td>0</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>Juni-26</td>
+                    <td>1&nbsp;117</td>
+                    <td>96</td>
+                    <td>3&nbsp;238</td>
+                    <td>7&nbsp;581</td>
+                </tr>
+                <tr>
+                    <td>Juli-26</td>
+                    <td>116</td>
+                    <td>0</td>
+                    <td>293</td>
+                    <td>78</td>
+                </tr>
+                <tr>
+                    <td>August-26</td>
+                    <td>1&nbsp;179</td>
+                    <td>8</td>
+                    <td>5&nbsp;047</td>
+                    <td>59</td>
+                </tr>
+            </tbody>
+        </table>
+    </details>
+
+    <div class="summary">
+        <h2>Oppsummering</h2>
+        <div id="summary">
+            <p>Laster data...</p>
+        </div>
+    </div>
+
+    <h2>Detaljerte logs (i dag)</h2>
+    <table id="logsTable">
+        <thead>
+            <tr>
+                <th>Dato</th>
+                <th>Hendelse</th>
+                <th>Nettleser/Enhet</th>
+                <th>Side</th>
+            </tr>
+        </thead>
+        <tbody id="logsBody">
+            <tr><td colspan="4">Laster data...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+    // Enkel stolpediagram-tegner (inline SVG, ingen ekstern avhengighet). Ett datasett
+    // (én farge) per diagram holder seg til dataviz-reglene: rundede stolpetopper,
+    // hårfin rutenett/grunnlinje, og verdi + etikett i et hover-tooltip siden hver
+    // stolpe ikke har plass til en tallverdi direkte på seg.
+    const CHART_COLOR = '#2a78d6';
+    const CHART_MUTED = '#898781';
+    const CHART_GRID = '#e1e0d9';
+    const CHART_BASELINE = '#c3c2b7';
+
+    function renderBarChart(container, data, valueLabel) {
+        container.innerHTML = '';
+        if (data.length === 0 || data.every(d => d.value === 0)) {
+            container.innerHTML = '<p><em>Ingen data å vise ennå.</em></p>';
+            return;
+        }
+
+        const width = Math.max(container.clientWidth || 600, 300);
+        const height = 220;
+        const paddingLeft = 46;
+        const paddingBottom = 26;
+        const paddingTop = 12;
+        const paddingRight = 12;
+        const plotWidth = width - paddingLeft - paddingRight;
+        const plotHeight = height - paddingTop - paddingBottom;
+
+        const niceMax = Math.max(1, ...data.map(d => d.value));
+        const barSlot = plotWidth / data.length;
+        const barWidth = Math.max(2, Math.min(24, barSlot - 6));
+
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.setAttribute('width', '100%');
+        svg.style.height = height + 'px';
+        svg.style.display = 'block';
+
+        const tickCount = 4;
+        for (let i = 0; i <= tickCount; i++) {
+            const v = (niceMax / tickCount) * i;
+            const y = paddingTop + plotHeight - (v / niceMax) * plotHeight;
+            const line = document.createElementNS(svgNS, 'line');
+            line.setAttribute('x1', paddingLeft);
+            line.setAttribute('x2', width - paddingRight);
+            line.setAttribute('y1', y);
+            line.setAttribute('y2', y);
+            line.setAttribute('stroke', CHART_GRID);
+            line.setAttribute('stroke-width', '1');
+            svg.appendChild(line);
+
+            const label = document.createElementNS(svgNS, 'text');
+            label.setAttribute('x', paddingLeft - 8);
+            label.setAttribute('y', y + 4);
+            label.setAttribute('text-anchor', 'end');
+            label.setAttribute('font-size', '11');
+            label.setAttribute('fill', CHART_MUTED);
+            label.textContent = fmt(Math.round(v));
+            svg.appendChild(label);
+        }
+
+        const baseline = document.createElementNS(svgNS, 'line');
+        baseline.setAttribute('x1', paddingLeft);
+        baseline.setAttribute('x2', width - paddingRight);
+        baseline.setAttribute('y1', paddingTop + plotHeight);
+        baseline.setAttribute('y2', paddingTop + plotHeight);
+        baseline.setAttribute('stroke', CHART_BASELINE);
+        baseline.setAttribute('stroke-width', '1');
+        svg.appendChild(baseline);
+
+        const tooltip = document.createElement('div');
+        tooltip.style.cssText = 'position:absolute;pointer-events:none;background:#0b0b0b;color:#fff;font-size:12px;padding:4px 8px;border-radius:4px;opacity:0;transition:opacity .1s;white-space:nowrap;z-index:10;';
+
+        const labelEveryN = Math.max(1, Math.ceil(data.length / 15));
+        data.forEach((d, i) => {
+            const x = paddingLeft + i * barSlot + (barSlot - barWidth) / 2;
+            const barHeight = (d.value / niceMax) * plotHeight;
+            const y = paddingTop + plotHeight - barHeight;
+
+            if (d.value > 0) {
+                const rect = document.createElementNS(svgNS, 'rect');
+                rect.setAttribute('x', x);
+                rect.setAttribute('y', y);
+                rect.setAttribute('width', barWidth);
+                rect.setAttribute('height', Math.max(barHeight, 1));
+                rect.setAttribute('rx', 4);
+                rect.setAttribute('ry', 4);
+                rect.setAttribute('fill', CHART_COLOR);
+                svg.appendChild(rect);
+            }
+
+            const hit = document.createElementNS(svgNS, 'rect');
+            hit.setAttribute('x', paddingLeft + i * barSlot);
+            hit.setAttribute('y', paddingTop);
+            hit.setAttribute('width', barSlot);
+            hit.setAttribute('height', plotHeight);
+            hit.setAttribute('fill', 'transparent');
+            hit.addEventListener('mouseenter', () => {
+                tooltip.textContent = `${d.tooltipLabel || d.label}: ${fmt(d.value)} ${valueLabel}`;
+                tooltip.style.opacity = '1';
+            });
+            hit.addEventListener('mousemove', (e) => {
+                const bounds = container.getBoundingClientRect();
+                tooltip.style.left = Math.min(e.clientX - bounds.left + 12, bounds.width - 140) + 'px';
+                tooltip.style.top = (e.clientY - bounds.top - 28) + 'px';
+            });
+            hit.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+            });
+            svg.appendChild(hit);
+
+            if (i % labelEveryN === 0 || i === data.length - 1) {
+                const xLabel = document.createElementNS(svgNS, 'text');
+                xLabel.setAttribute('x', x + barWidth / 2);
+                xLabel.setAttribute('y', paddingTop + plotHeight + 18);
+                xLabel.setAttribute('text-anchor', 'middle');
+                xLabel.setAttribute('font-size', '11');
+                xLabel.setAttribute('fill', CHART_MUTED);
+                xLabel.textContent = d.label;
+                svg.appendChild(xLabel);
+            }
+        });
+
+        container.appendChild(svg);
+        container.appendChild(tooltip);
+    }
+
+    // ISO 8601-ukenummer (mandag-basert, uke 1 inneholder årets første torsdag).
+    function getISOWeek(date) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        const dayNum = d.getUTCDay() || 7;
+        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        const week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return { year: d.getUTCFullYear(), week };
+    }
+
+    const NORWEGIAN_MONTHS = ['januar', 'februar', 'mars', 'april', 'mai', 'juni', 'juli', 'august', 'september', 'oktober', 'november', 'desember'];
+
+    // Summer opp de arkiverte månedene (radene i "Arkivert"-tabellen øverst),
+    // siden loggradene deres er slettet fra loggfilene.
+    function sumArchived() {
+        const archived = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+        document.querySelectorAll('#archivedBody tr').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const toNumber = (cell) => parseInt(cell.textContent.replace(/\s/g, ''), 10) || 0;
+            archived.page_view += toNumber(cells[1]);
+            archived.pwa_installed += toNumber(cells[2]);
+            archived.run_python += toNumber(cells[3]);
+            archived.turtle_run += toNumber(cells[4]);
+        });
+        return archived;
+    }
+
+    // "Treff" = sidevisninger + Python-kjøringer + Turtle-kjøringer (PWA-installasjoner er ikke med).
+    function countHits(counts) {
+        return counts.page_view + counts.run_python + counts.turtle_run;
+    }
+
+    // Tusenskille med (hardt) mellomrom: 12345 -> "12 345".
+    function fmt(n) {
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0');
+    }
+
+    // "2026-10" -> "Oktober-26"
+    function monthLabel(monthKey) {
+        const [year, month] = monthKey.split('-');
+        const name = NORWEGIAN_MONTHS[parseInt(month, 10) - 1];
+        return `${name.charAt(0).toUpperCase()}${name.slice(1)}-${year.slice(2)}`;
+    }
+
+    function parseLine(line) {
+        const parts = line.split(' | ');
+        return {
+            date: parts[0] || 'Ukjent',
+            event: parts[1] || 'Ukjent',
+            userAgent: parts[2] || 'Ukjent',
+            path: parts[3] || 'Ukjent'
+        };
+    }
+
+    async function loadStats() {
+        const now = new Date();
+        const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const todayKey = `${currentMonthKey}-${String(now.getDate()).padStart(2, '0')}`;
+
+        const months = await fetch('list.php').then(r => r.json());
+
+        const monthlyStats = {};
+        let todayLogs = [];
+        // Treff per dag og per uke (alle måneder med loggfiler).
+        // Arkiverte måneder (mai-august 2026) er ikke med her siden de rå loggradene
+        // deres er slettet - se "Arkivert"-tabellen øverst.
+        const dailyCounts = {};
+        const weeklyCounts = {};
+        // Glidende vindu: siste 30 døgn (30 × 24 timer bakover fra nå), på tvers av månedsfiler.
+        const last30Cutoff = now.getTime() - 30 * 24 * 60 * 60 * 1000;
+        const last30Counts = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+
+        await Promise.all(months.map(async (monthKey) => {
+            const [year, month] = monthKey.split('-');
+            const text = await fetch(`${year}/${month}.txt`).then(r => r.text());
+            const lines = text.trim().split('\n').filter(Boolean);
+            const counts = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+
+            lines.forEach(line => {
+                const log = parseLine(line);
+                if (log.event in counts) counts[log.event]++;
+                if (monthKey === currentMonthKey && log.date.startsWith(todayKey)) {
+                    todayLogs.push(log);
+                }
+
+                const dayKey = log.date.slice(0, 10);
+                if (dayKey.length === 10) {
+                    dailyCounts[dayKey] = (dailyCounts[dayKey] || 0) + 1;
+                }
+
+                const parsedDate = new Date(log.date.replace(' ', 'T'));
+                if (!isNaN(parsedDate) && parsedDate.getTime() >= last30Cutoff && log.event in last30Counts) {
+                    last30Counts[log.event]++;
+                }
+                if (!isNaN(parsedDate)) {
+                    const { year: isoYear, week } = getISOWeek(parsedDate);
+                    const weekKey = `${isoYear}-W${String(week).padStart(2, '0')}`;
+                    weeklyCounts[weekKey] = (weeklyCounts[weekKey] || 0) + 1;
+                }
+            });
+
+            monthlyStats[monthKey] = counts;
+        }));
+
+        // Vis dagens detaljerte logs (nyeste først)
+        todayLogs.reverse();
+        const logsBody = document.getElementById('logsBody');
+        logsBody.innerHTML = '';
+        if (todayLogs.length === 0) {
+            logsBody.innerHTML = '<tr><td colspan="4">Ingen hendelser i dag ennå.</td></tr>';
+        }
+        todayLogs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${log.date}</td>
+                <td>${log.event}</td>
+                <td>${log.userAgent}</td>
+                <td>${log.path}</td>
+            `;
+            logsBody.appendChild(row);
+        });
+
+        // Vis månedlig oppsummering
+        const summaryDiv = document.getElementById('summary');
+        summaryDiv.innerHTML = '<h3>Månedlig oppsummering</h3>';
+
+        const sortedMonths = Object.keys(monthlyStats).sort();
+
+        const monthlyTable = document.createElement('table');
+        monthlyTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Måned</th>
+                    <th>Sidevisninger</th>
+                    <th>PWA installert</th>
+                    <th>Python-kjøringer</th>
+                    <th>Turtle-kjøringer</th>
+                    <th>Treff</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+
+        sortedMonths.forEach(month => {
+            const row = document.createElement('tr');
+            row.dataset.month = month;
+            row.innerHTML = `
+                <td><a href="#" class="month-link" title="Vis treff per dag for ${monthLabel(month)}">${monthLabel(month)}</a></td>
+                <td>${fmt(monthlyStats[month].page_view)}</td>
+                <td>${fmt(monthlyStats[month].pwa_installed)}</td>
+                <td>${fmt(monthlyStats[month].run_python)}</td>
+                <td>${fmt(monthlyStats[month].turtle_run)}</td>
+                <td>${fmt(countHits(monthlyStats[month]))}</td>
+            `;
+            monthlyTable.querySelector('tbody').appendChild(row);
+        });
+
+        const last30Row = document.createElement('tr');
+        last30Row.className = 'last30-row';
+        last30Row.innerHTML = `
+            <td>Siste 30 døgn</td>
+            <td>${fmt(last30Counts.page_view)}</td>
+            <td>${fmt(last30Counts.pwa_installed)}</td>
+            <td>${fmt(last30Counts.run_python)}</td>
+            <td>${fmt(last30Counts.turtle_run)}</td>
+            <td>${fmt(countHits(last30Counts))}</td>
+        `;
+        monthlyTable.querySelector('tbody').appendChild(last30Row);
+
+        summaryDiv.appendChild(monthlyTable);
+
+        // Diagram: antall treff per dag for valgt måned (aktiv måned som standard,
+        // kan byttes ved å klikke på en måned i tabellen over)
+        const dailyBlock = document.createElement('div');
+        dailyBlock.className = 'chart-block';
+        dailyBlock.innerHTML = `<h3></h3>
+            <div class="chart-container"></div>`;
+        summaryDiv.appendChild(dailyBlock);
+
+        function showDailyChart(monthKey) {
+            const [selYear, selMonthNum] = monthKey.split('-').map(Number);
+            const daysInMonth = new Date(selYear, selMonthNum, 0).getDate();
+            const dailyChartData = [];
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayKey = `${monthKey}-${String(day).padStart(2, '0')}`;
+                dailyChartData.push({ label: String(day), value: dailyCounts[dayKey] || 0 });
+            }
+            dailyBlock.querySelector('h3').textContent =
+                `Antall treff per dag (${NORWEGIAN_MONTHS[selMonthNum - 1]} ${selYear})`;
+            renderBarChart(dailyBlock.querySelector('.chart-container'), dailyChartData, 'treff');
+            monthlyTable.querySelectorAll('tr[data-month]').forEach(tr => {
+                tr.classList.toggle('selected-month', tr.dataset.month === monthKey);
+            });
+        }
+
+        monthlyTable.addEventListener('click', (e) => {
+            const link = e.target.closest('.month-link');
+            if (!link) return;
+            e.preventDefault();
+            showDailyChart(link.closest('tr').dataset.month);
+        });
+
+        showDailyChart(currentMonthKey);
+
+        // Diagram: antall treff per uke (ukenummer), på tvers av alle måneder med loggfiler
+        const sortedWeekKeys = Object.keys(weeklyCounts).sort();
+        const weeklyChartData = sortedWeekKeys.map(weekKey => {
+            const [weekYear, weekNum] = weekKey.split('-W');
+            return {
+                label: `U${parseInt(weekNum, 10)}`,
+                tooltipLabel: `Uke ${parseInt(weekNum, 10)}, ${weekYear}`,
+                value: weeklyCounts[weekKey]
+            };
+        });
+
+        const weeklyBlock = document.createElement('div');
+        weeklyBlock.className = 'chart-block';
+        weeklyBlock.innerHTML = `<h3>Antall treff per uke</h3>
+            <div class="chart-container"></div>`;
+        summaryDiv.appendChild(weeklyBlock);
+        renderBarChart(weeklyBlock.querySelector('.chart-container'), weeklyChartData, 'treff');
+
+        // Vis total oppsummering (arkiverte måneder + alle loggfiler)
+        const archived = sumArchived();
+        const total = { page_view: archived.page_view, pwa_installed: archived.pwa_installed, run_python: archived.run_python, turtle_run: archived.turtle_run };
+        Object.values(monthlyStats).forEach(counts => {
+            total.page_view += counts.page_view;
+            total.pwa_installed += counts.pwa_installed;
+            total.run_python += counts.run_python;
+            total.turtle_run += counts.turtle_run;
+        });
+
+        const totalSummary = document.createElement('div');
+        totalSummary.className = 'summary-item';
+        totalSummary.innerHTML = `
+            <h3>Total oppsummering</h3>
+            <p><em>Inkluderer arkiverte måneder (se tabell øverst).</em></p>
+            <strong>Sidevisninger:</strong> ${fmt(total.page_view)}<br>
+            <strong>PWA installert:</strong> ${fmt(total.pwa_installed)}<br>
+            <strong>Python-kjøringer:</strong> ${fmt(total.run_python)}<br>
+            <strong>Turtle-kjøringer:</strong> ${fmt(total.turtle_run)}<br>
+            <strong>Treff:</strong> ${fmt(countHits(total))}
+        `;
+        summaryDiv.appendChild(totalSummary);
+
+        // Vis dagens trafikk (samme hendelser som "Detaljerte logs"-tabellen under, bare summert)
+        const todayCounts = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+        todayLogs.forEach(log => {
+            if (log.event in todayCounts) todayCounts[log.event]++;
+        });
+
+        const todaySummary = document.createElement('div');
+        todaySummary.className = 'summary-item';
+        todaySummary.innerHTML = `
+            <h3>Dagens trafikk (${todayKey})</h3>
+            <strong>Sidevisninger:</strong> ${fmt(todayCounts.page_view)}<br>
+            <strong>PWA installert:</strong> ${fmt(todayCounts.pwa_installed)}<br>
+            <strong>Python-kjøringer:</strong> ${fmt(todayCounts.run_python)}<br>
+            <strong>Turtle-kjøringer:</strong> ${fmt(todayCounts.turtle_run)}<br>
+            <strong>Treff:</strong> ${fmt(countHits(todayCounts))}
+        `;
+        summaryDiv.appendChild(todaySummary);
+    }
+
+    loadStats().catch(error => {
+        console.error('Feil ved lasting av logs:', error);
+        document.getElementById('logsBody').innerHTML = '<tr><td colspan="4">Kunne ikke laste loggdata. Sjekk at log/list.php og loggfilene finnes.</td></tr>';
+        document.getElementById('summary').innerHTML = '<p>Kunne ikke laste loggdata.</p>';
+    });
+    </script>
+</body>
+</html>

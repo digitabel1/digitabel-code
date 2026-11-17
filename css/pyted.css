@@ -1,0 +1,899 @@
+@font-face {
+  font-family: Conthrax; /* set name */
+  src: url(../img/conthrax.ttf); /* url of the font */
+}
+
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    max-width: 93%;
+    margin: auto;
+    padding: 15px;
+    background: #152b44;
+    color: white;
+}
+
+#imgbeta {
+    position: fixed;
+    right: 0;
+    top: 0;
+    max-width: 100px;
+    z-index: 1000;
+}
+#logo_light, #logo_dark {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    max-width: 100px;
+}
+#logo_code_light, #logo_code_dark {
+    max-height: 42px;
+    width: auto;
+}
+
+button, .toolbar-btn {
+    margin: 1px;
+    margin-bottom: 5px;
+    padding: 4px 15px;
+    background: #5c6b7a;
+    color: #faf7f2;
+    border: none;
+    border-radius: 4px;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.toolbar-btn {
+    display: inline-block;
+    text-decoration: none;
+}
+
+button:hover, .toolbar-btn:hover {
+    opacity: 0.75;
+    transform: scale(1.05);
+}
+
+body.dark {
+    background: #0d1b2a;
+}
+
+/* Verktøyrad-knappene har samme bakgrunn som topframe (gjennomsiktig) */
+body.dark #toolbar button, body.dark #toolbar .toolbar-btn, body.dark #toolbar select {
+    background: transparent;
+    color: #faf7f2;
+}
+
+body.light #toolbar button, body.light #toolbar .toolbar-btn, body.light #toolbar select {
+    background: transparent;
+    color: #152b44;
+}
+
+/* "Ny"-ikonet har inline color: white, så det må overstyres */
+body.dark #toolbar .toolbar-btn i {
+    color: #faf7f2 !important;
+}
+
+body.light #toolbar .toolbar-btn i {
+    color: #152b44 !important;
+}
+
+/* Verktøyrad: ikon med liten label under.
+   Flex fjerner mellomrommet som linjeskiftene mellom knappene i HTML-en ellers gir. */
+.topframe #toolbar {
+    display: flex;
+    flex-wrap: nowrap; /* Aldri to linjer – er det ikke plass, kuttes raden til høyre */
+    min-width: 0;      /* Lar raden bli smalere enn knappene, så Kjør aldri skyves ut */
+    overflow: hidden;
+    padding: 2px 0;    /* Litt luft så hover-forstørrelsen (scale) ikke kuttes oppe/nede */
+    align-items: center; /* Knappene sentreres vertikalt (delerne strekkes med align-self) */
+}
+
+/* Knappene og delerne skal ikke presses sammen når plassen blir liten */
+#toolbar > * {
+    flex-shrink: 0;
+}
+
+/* Tynne vertikale delere i verktøyraden */
+.toolbar-divider {
+    min-height: 45px;
+    align-self: stretch;
+    width: 1px;
+    margin: 2px 6px;
+    /* Lav kontrast mot den mørke bakgrunnen (#0d1b2a), samme idé som i lyst tema under */
+    background: #203750;
+}
+
+body.light .toolbar-divider {
+    background: #ffd6a5;
+}
+
+/* Delelinjen mellom overskrift og Ny står direkte i topframe, som har egen gap */
+.topframe > .toolbar-divider {
+    /* Ekstra marg til venstre, så linjen ser sentrert ut mellom overskriften og
+       Ny-ikonet (Ny-knappen har ~15px luft rundt ikonet pga. min-width) */
+    margin: 4px 0 4px 16px;
+}
+
+#toolbar button, #toolbar .toolbar-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    vertical-align: top;
+    min-width: 46px;
+    margin: 0 1px;
+    padding: 2px 4px 1px;
+    font-size: 1.25rem; /* Ikonstørrelse – knappene har ingen bakgrunn, så luften inni dem trengs ikke */
+    line-height: 1;
+}
+
+#toolbar .btn-label {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1;
+}
+
+/* Skriftstørrelse-velgeren ligger inni en label-boks som ser ut som en knapp.
+   Select-elementet fyller hele boksen (også under labelen), siden klikk på en
+   <label> bare gir fokus og ikke åpner nedtrekkslisten. */
+#toolbar .toolbar-select {
+    position: relative;
+    padding: 0;
+}
+
+#toolbar .toolbar-select select {
+    width: 100%;
+    margin: 0;
+    padding: 2px 4px 16px;
+    background: transparent !important;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+#toolbar .toolbar-select .btn-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    text-align: center;
+    pointer-events: none;
+}
+
+#toolbar .toolbar-select select:hover {
+    opacity: 1;
+    transform: none;
+}
+
+/* Valgene i nedtrekkslisten trenger en ekte bakgrunn (ikke gjennomsiktig) */
+body.dark #toolbar .toolbar-select select option {
+    background: #0d1b2a;
+    color: #faf7f2;
+}
+
+body.light #toolbar .toolbar-select select option {
+    background: #faf7f2;
+    color: #152b44;
+}
+select {
+    margin: 1px;
+    margin-bottom: 5px;
+    padding: 4px 15px;
+    background: #5c6b7a;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.1s;
+    appearance: none; /* Fjerner standard utseende i noen nettlesere */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-align: center; /* Senter tekst i dropdownen */
+    vertical-align: middle;
+}
+
+select:hover {
+    opacity: 0.75;
+    transform: scale(1.05);
+}
+
+#head1_light {
+    font-family: Conthrax;
+    font-size: 60px;
+    margin-top: -10px;
+    margin-bottom: -5px;
+    padding: 0px;
+    color: #000;
+}
+
+#head1_dark {
+    font-family: Conthrax;
+    font-size: 60px;
+    margin-top: -10px;
+    margin-bottom: -5px;
+    padding: 0px;
+    color: #faf7f2;
+}
+
+#popinfo {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: 400;
+    margin-top: -20px;
+}#popinfo_head {
+    font-family: Conthrax;
+    font-size: 50px;
+    margin: 0;
+}
+#loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.85); /* Mørk, gjennomsiktig bakgrunn for å dimme siden */
+    font-family: 'JetBrains Mono', monospace;
+    font-size: large;
+    font-weight: 500;
+    text-align: center;
+    color: white; /* Hvit tekst for bedre kontrast mot mørk bakgrunn */
+    z-index: 1000; /* Sikrer at den vises over alt annet innhold */
+    pointer-events: auto; /* Blokkerer klikk på resten av siden */
+}
+.loading-title {
+    font-family: Conthrax;
+    font-size: 100px;
+}
+#loading-problem {
+    max-width: 600px;
+    font-size: medium;
+    font-weight: 400;
+    color: #ffb86c;
+}
+#loading-retry {
+    font-family: inherit;
+    font-size: medium;
+    padding: 0.5em 1.5em;
+    border: none;
+    border-radius: 6px;
+    background-color: #50fa7b;
+    color: #282a36;
+    cursor: pointer;
+}
+
+.CodeMirror {
+    font-family: "JetBrains Mono", monospace;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "calt" 0;
+    min-height: 200px;
+    font-size: 18px;
+    font-weight: 500;
+    border: 2px solid #6272a4;
+    border-radius: 8px;
+}
+
+.cm-s-dracula.CodeMirror {
+    border: 2px solid #6272a4 !important;
+}
+
+body.light .CodeMirror {
+    border-color: #ccc;
+}
+
+.CodeMirror-hints {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 4px;
+    border: none;
+    padding: 2px 0;
+}
+
+.CodeMirror-hint {
+    padding: 2px 8px;
+}
+
+body.light .CodeMirror-hints {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+body.light .CodeMirror-hint-active {
+    background: #d0e4ff;
+    color: #000000;
+}
+
+body.dark .CodeMirror-hints {
+    background: #152b44;
+    color: #f8f8f2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+body.dark .CodeMirror-hint {
+    color: #f8f8f2;
+}
+
+body.dark .CodeMirror-hint-active {
+    background: #44475a;
+    color: #f8f8f2;
+}
+
+body.dark .CodeMirror-foldgutter-open:after,
+body.dark .CodeMirror-foldgutter-folded:after {
+    color: #6d8a88;
+}
+
+.cm-clickable-link {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#plot {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 18px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto;
+    padding: 20px;
+    border: 2px solid #6272a4; /* Samme ramme som editoren */
+    background: #0a1420;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    max-width: 1000px;
+}
+
+.light {
+    background: #faf7f2 !important;
+    color: black !important;
+}
+
+.light .output-wrapper,
+.light #output,
+.light #plot {
+    background: #ffffff;
+    color: black;
+}
+
+/* Samme rammefarge som editoren i lyst tema (body.light .CodeMirror) */
+.light .output-wrapper,
+.light #plot {
+    border-color: #ccc;
+}
+
+.light .python-input-inline {
+    color: #1a7a2e;
+}
+
+.banner {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Når temaet er lyst, vis banner-light og skjul banner-dark */
+.light #banner-light {
+    display: block;
+}
+.light #banner-dark {
+    display: none;
+}
+
+/* Når temaet er mørkt, vis banner-dark og skjul banner-light */
+.dark #banner-dark {
+    display: block;
+}
+.dark #banner-light {
+    display: none;
+}
+
+/* Popup-vinduet (skjult som standard) */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.75);
+    z-index: 1001;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    color: #111;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    border-top: 4px solid #ffb86c;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.dark .modal-content {
+    background-color: #152b44;
+    color: #eee;
+}
+
+.dark .modal-logo-light { display: none !important; }
+.dark .modal-logo-dark { display: inline !important; }
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+}
+
+/* EKSEMPEL-modal: faner per trinn, og emner som kolonner */
+#examples-modal .modal-content {
+    max-width: 1000px;
+    margin: 5% auto;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+#examples-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 2px solid #ffb86c;
+    margin-bottom: 16px;
+}
+
+#examples-tabs .examples-tab {
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 6px 6px 0 0;
+    background: #e9ecef;
+    color: #152b44;
+}
+
+.dark #examples-tabs .examples-tab {
+    background: #1f3a5a;
+    color: #faf7f2;
+}
+
+#examples-tabs .examples-tab:hover {
+    transform: none;
+}
+
+#examples-tabs .examples-tab.active {
+    background: #ffb86c;
+    color: #282a36;
+    opacity: 1;
+}
+
+#examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.examples-topic {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+#examples-grid .examples-topic h3 {
+    font-size: 1rem;
+    margin: 0 0 8px;
+}
+
+.examples-empty {
+    font-style: italic;
+    opacity: 0.6;
+    margin: 0;
+}
+
+.shortcut-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 60px;
+    margin-bottom: 20px;
+}
+
+.shortcut-columns .shortcut-list {
+    margin-bottom: 0;
+}
+
+.shortcut-list {
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.shortcut-list span {
+    white-space: nowrap;
+    display: block;
+    font-size: 1rem;
+}
+
+#close-modal {
+    background: #ffb86c;
+    color: #282a36;
+    border: none;
+    padding: 7px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    transition: background 0.2s ease, transform 0.1s ease;
+}
+
+#close-modal:hover {
+    background: #e8974a;
+    transform: translateY(-1px);
+}
+
+.update-btn {
+  background-color: #ffb86c;
+  color: #282a36;
+  border: none;
+  padding: 7px 18px;
+  margin: 8px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.update-btn:hover {
+  background-color: #e8974a;
+  transform: translateY(-1px);
+}
+
+.modal-link {
+    color: #6272a4;
+}
+
+.dark .modal-link {
+    color: #ffb86c;
+}
+
+kbd {
+    background: #e9ecef;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-family: "JetBrains Mono", monospace;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+}
+
+.dark kbd {
+    background: #44475a;
+    color: #f8f8f2;
+    border: 1px solid #6272a4;
+}
+
+/* -- Visuell feedback -- */
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0,0,0,.1);
+  border-radius: 50%;
+  border-top-color: #8be9fd;
+  animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Kodehjelp */
+#error-message {
+    color: #6272a4;
+    margin: 10px 0;
+    display: none;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    white-space: pre-line; /* Behandler \n som linjeskift */
+}
+
+/* Når temaet er mørkt, sett fargen til orange */
+.dark #error-message {
+    color: #ffb86c;
+}
+.editor-wrapper {
+    position: relative; /* Nødvendig for absolute posisjonering av knappen */
+    width: 100%; /* Juster bredde etter behov */
+    min-height: 200px; /* Juster høyde etter behov */
+}
+
+#code {
+    width: 100%; /* Fyller hele bredden av wrapperen */
+    height: 100%; /* Fyller hele høyden av wrapperen */
+    box-sizing: border-box; /* Sikrer at padding/border ikke påvirker størrelsen */
+    padding: 10px; /* Avstand inne i textarea */
+    font-family: monospace; /* Typisk for kodeeditorer */
+    resize: none; /* Forhindrer brukeren i å endre størrelsen på textarea */
+}
+
+.editor-resize-handle {
+    height: 12px;
+    margin-top: -3px; /* Overlapper editorens nedre kant litt, så håndtaket ser sammenhengende ut */
+    margin-bottom: -4px;
+    border: 2px solid #0d1b2a; /* Samme farge som sidens bakgrunn (dark), så håndtaket nesten ikke synes før man hovrer */
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    background-color: #0d1b2a;
+    cursor: row-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none; /* Forhindrer at nettleseren scroller siden ved drag på touch-enheter */
+}
+
+.editor-resize-handle::after {
+    content: "";
+    width: 40px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: #6272a4;
+}
+
+.editor-resize-handle:hover,
+.editor-resize-handle.dragging {
+    background-color: #152b44;
+}
+
+.editor-resize-handle:hover::after,
+.editor-resize-handle.dragging::after {
+    background-color: #f8f8f2;
+}
+
+body.light .editor-resize-handle {
+    border-color: #ffffff; /* Samme farge som editoren/output-welcome-boksen i lyst tema, så håndtaket nesten ikke synes før man hovrer */
+    background-color: #ffffff;
+}
+
+body.light .editor-resize-handle::after {
+    background-color: #ccc;
+}
+
+body.light .editor-resize-handle:hover,
+body.light .editor-resize-handle.dragging {
+    background-color: #f2ece2;
+}
+
+body.light .editor-resize-handle:hover::after,
+body.light .editor-resize-handle.dragging::after {
+    background-color: #555;
+}
+
+.corner-button {
+    position: absolute;
+  /*  bottom: 12px;  Avstand fra bunnen */
+    right: 15px; /* Avstand fra høyre kant */
+    padding: 6px 12px;
+    background-color: #5c6b7a;
+    color:#faf7f2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 10; /* Sikrer at knappen vises over textarea */
+    font-size: 18px;
+}
+
+/* "Tøm"-knappene skal se ut som en del av editor/output, ikke stikke seg ut */
+.clear-button {
+    background-color: #0d1b2a;
+    color: #5c6b7a;
+    border: 1px solid #5c6b7a;
+}
+
+.clear-button:hover {
+    background-color: #152b44;
+}
+
+body.light .clear-button {
+    background-color: #ffffff;
+    color: #5c6b7a;
+    border: 1px solid #5c6b7a;
+}
+
+body.light .clear-button:hover {
+    background-color: #f0f0f0;
+}
+
+.output-wrapper {
+    position: relative; /* Nødvendig for absolute posisjonering av knappen */
+    margin-top: 0px;
+    border: 2px solid #6272a4; /* Samme ramme som editoren */
+    border-radius: 8px;
+    overflow: hidden; /* Klipper innholdet etter de avrundede hjørnene */
+    background: #0a1420;
+    padding: 0px;
+}
+
+#output {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 18px;
+    margin: 0;
+    padding: 0 0 0 10px; /* Liten venstremarg så teksten ikke ligger inntil rammen */
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    color: white;
+}
+
+#output-welcome {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    color: white;
+}
+
+#output-welcome img {
+    width: 386px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+#output-welcome p {
+    margin: 0;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 16px;
+}
+
+.light #output-welcome {
+    background: #ffffff;
+    color: black;
+}
+
+.python-input-inline {
+    border: none;
+    border-bottom: 1px dashed #aaa;
+    background: transparent;
+    outline: none;
+    font-family: "JetBrains Mono", monospace;
+    font-size: inherit;
+    color: #50fa7b;
+    min-width: 150px;
+    padding: 0;
+    margin: 0;
+    vertical-align: baseline;
+}
+
+.topframe {
+    display: flex; /* Logo + overskrift til venstre, verktøyraden rett etter */
+    align-items: center;
+    gap: 12px;
+    /* border: 2px solid #6272a4; Samme ramme som editoren – fjernet i 0.60 for å teste uten ramme */
+    border-radius: 8px;
+    padding: 3px 6px;
+    margin-bottom: 8px;
+}
+
+/* Logo + "Code"-overskrift til venstre i topframe */
+.topframe .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.topframe .banner {
+    width: auto;
+    margin: 0;
+}
+
+.topframe #head1_light, .topframe #head1_dark {
+    font-size: 36px;
+    margin: 0;
+    line-height: 1;
+}
+
+/* Samme farge som forgrunnen på knappene i verktøyraden */
+.topframe #head1_light {
+    color: #152b44;
+}
+
+.topframe #head1_dark {
+    color: #faf7f2;
+}
+
+.topframe #toolbar {
+    flex: 1;
+}
+
+/* Turtle- og Info-knappen skyves helt til høyre i verktøyraden, rett før Kjør-knappen */
+.topframe #toolbar #turtle-button {
+    margin-left: auto;
+}
+
+/* Liten pil oppe til høyre på turtle-ikonet, som antyder at knappen åpner en annen side */
+#turtle-button .turtle-icon {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+}
+
+#turtle-button .turtle-img {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.15em;
+    /* Speilvendt så hodet peker bort fra pilen oppe til høyre */
+    transform: scaleX(-1);
+}
+
+/* Ikonet er tegnet med sort strek, så det inverteres til hvitt i mørkt tema
+   (samme effekt som currentColor ga for den gamle SVG-en) */
+body.dark #turtle-button .turtle-img {
+    filter: invert(1);
+}
+
+#turtle-button .turtle-ext {
+    position: absolute;
+    top: -3px;
+    right: -9px;
+    font-size: 0.5em;
+}
+
+/* Kjør-knappen helt til høyre i topframe: lav knapp med label til høyre for ikonet,
+   og grønn bakgrunn så den skiller seg ut */
+.topframe #run-button {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin: 0 4px 0 0;
+    padding: 6px 14px;
+    background-color: #2e9e4f;
+    color: #faf7f2;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.topframe #run-button:hover {
+    background-color: #36b25a;
+}
+
+.topframe #run-button .btn-label {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+/* Smalt vindu: skjul logoen oppe til venstre, så verktøyraden får plass på én linje.
+   Skjuler lenken rundt bildene, så tema-byttet (som setter display på <img>) ikke påvirkes */
+@media (max-width: 996px) {
+    .topframe .brand a {
+        display: none;
+    }
+}
+
+/* Enda smalere: skjul også "Code"-overskriften (hele .brand) og delelinjen etter den.
+   Tema-byttet setter display på #banner-light/-dark inni .brand, så det påvirkes ikke */
+@media (max-width: 925px) {
+    .topframe .brand,
+    .topframe > .toolbar-divider {
+        display: none;
+    }
+}

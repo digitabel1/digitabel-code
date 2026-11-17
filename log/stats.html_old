@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitAbel Code Statistikk</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .summary {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>DigitAbel Code Statistikk</h1>
+
+    <div class="summary">
+        <h2>Arkivert: Mai–August 2026</h2>
+        <p><em>Disse tallene er fra før månedlige loggfiler (<code>log/&lt;år&gt;/&lt;måned&gt;.txt</code>) ble
+        innført i september 2026, og ble talt opp manuelt før de tilhørende loggradene ble slettet fra den
+        gamle <code>pyted_logs.txt</code>. Måneder fra og med september 2026 telles automatisk fra loggfilene
+        under, og legges ikke lenger inn her manuelt.</em></p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Måned</th>
+                    <th>Sidevisninger</th>
+                    <th>PWA installert</th>
+                    <th>Python-kjøringer</th>
+                    <th>Turtle-kjøringer</th>
+                </tr>
+            </thead>
+            <tbody id="archivedBody">
+                <tr>
+                    <td>2026-05</td>
+                    <td>1355</td>
+                    <td>64</td>
+                    <td>0</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>2026-06</td>
+                    <td>1117</td>
+                    <td>96</td>
+                    <td>3238</td>
+                    <td>7581</td>
+                </tr>
+                <tr>
+                    <td>2026-07</td>
+                    <td>116</td>
+                    <td>0</td>
+                    <td>293</td>
+                    <td>78</td>
+                </tr>
+                <tr>
+                    <td>2026-08</td>
+                    <td>1179</td>
+                    <td>8</td>
+                    <td>5047</td>
+                    <td>59</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h2>Oppsummering</h2>
+        <div id="summary">
+            <p>Laster data...</p>
+        </div>
+    </div>
+
+    <h2>Detaljerte logs (i dag)</h2>
+    <table id="logsTable">
+        <thead>
+            <tr>
+                <th>Dato</th>
+                <th>Hendelse</th>
+                <th>Nettleser/Enhet</th>
+                <th>Side</th>
+            </tr>
+        </thead>
+        <tbody id="logsBody">
+            <tr><td colspan="4">Laster data...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+    // Summer opp de arkiverte månedene (radene i "Arkivert"-tabellen øverst),
+    // siden loggradene deres er slettet fra loggfilene.
+    function sumArchived() {
+        const archived = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+        document.querySelectorAll('#archivedBody tr').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const toNumber = (cell) => parseInt(cell.textContent, 10) || 0;
+            archived.page_view += toNumber(cells[1]);
+            archived.pwa_installed += toNumber(cells[2]);
+            archived.run_python += toNumber(cells[3]);
+            archived.turtle_run += toNumber(cells[4]);
+        });
+        return archived;
+    }
+
+    function parseLine(line) {
+        const parts = line.split(' | ');
+        return {
+            date: parts[0] || 'Ukjent',
+            event: parts[1] || 'Ukjent',
+            userAgent: parts[2] || 'Ukjent',
+            path: parts[3] || 'Ukjent'
+        };
+    }
+
+    async function loadStats() {
+        const now = new Date();
+        const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const todayKey = `${currentMonthKey}-${String(now.getDate()).padStart(2, '0')}`;
+
+        const months = await fetch('list.php').then(r => r.json());
+
+        const monthlyStats = {};
+        let todayLogs = [];
+
+        await Promise.all(months.map(async (monthKey) => {
+            const [year, month] = monthKey.split('-');
+            const text = await fetch(`${year}/${month}.txt`).then(r => r.text());
+            const lines = text.trim().split('\n').filter(Boolean);
+            const counts = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+
+            lines.forEach(line => {
+                const log = parseLine(line);
+                if (log.event in counts) counts[log.event]++;
+                if (monthKey === currentMonthKey && log.date.startsWith(todayKey)) {
+                    todayLogs.push(log);
+                }
+            });
+
+            monthlyStats[monthKey] = counts;
+        }));
+
+        // Vis dagens detaljerte logs (nyeste først)
+        todayLogs.reverse();
+        const logsBody = document.getElementById('logsBody');
+        logsBody.innerHTML = '';
+        if (todayLogs.length === 0) {
+            logsBody.innerHTML = '<tr><td colspan="4">Ingen hendelser i dag ennå.</td></tr>';
+        }
+        todayLogs.forEach(log => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${log.date}</td>
+                <td>${log.event}</td>
+                <td>${log.userAgent}</td>
+                <td>${log.path}</td>
+            `;
+            logsBody.appendChild(row);
+        });
+
+        // Vis månedlig oppsummering
+        const summaryDiv = document.getElementById('summary');
+        summaryDiv.innerHTML = '<h3>Månedlig oppsummering</h3>';
+
+        const sortedMonths = Object.keys(monthlyStats).sort();
+
+        const monthlyTable = document.createElement('table');
+        monthlyTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Måned</th>
+                    <th>Sidevisninger</th>
+                    <th>PWA installert</th>
+                    <th>Python-kjøringer</th>
+                    <th>Turtle-kjøringer</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+
+        sortedMonths.forEach(month => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${month}</td>
+                <td>${monthlyStats[month].page_view}</td>
+                <td>${monthlyStats[month].pwa_installed}</td>
+                <td>${monthlyStats[month].run_python}</td>
+                <td>${monthlyStats[month].turtle_run}</td>
+            `;
+            monthlyTable.querySelector('tbody').appendChild(row);
+        });
+
+        summaryDiv.appendChild(monthlyTable);
+
+        // Vis total oppsummering (arkiverte måneder + alle loggfiler)
+        const archived = sumArchived();
+        const total = { page_view: archived.page_view, pwa_installed: archived.pwa_installed, run_python: archived.run_python, turtle_run: archived.turtle_run };
+        Object.values(monthlyStats).forEach(counts => {
+            total.page_view += counts.page_view;
+            total.pwa_installed += counts.pwa_installed;
+            total.run_python += counts.run_python;
+            total.turtle_run += counts.turtle_run;
+        });
+
+        const totalSummary = document.createElement('div');
+        totalSummary.className = 'summary-item';
+        totalSummary.innerHTML = `
+            <h3>Total oppsummering</h3>
+            <p><em>Inkluderer arkiverte måneder (se tabell øverst).</em></p>
+            <strong>Sidevisninger:</strong> ${total.page_view}<br>
+            <strong>PWA installert:</strong> ${total.pwa_installed}<br>
+            <strong>Python-kjøringer:</strong> ${total.run_python}<br>
+            <strong>Turtle-kjøringer:</strong> ${total.turtle_run}
+        `;
+        summaryDiv.appendChild(totalSummary);
+
+        // Vis dagens trafikk (samme hendelser som "Detaljerte logs"-tabellen under, bare summert)
+        const todayCounts = { page_view: 0, pwa_installed: 0, run_python: 0, turtle_run: 0 };
+        todayLogs.forEach(log => {
+            if (log.event in todayCounts) todayCounts[log.event]++;
+        });
+
+        const todaySummary = document.createElement('div');
+        todaySummary.className = 'summary-item';
+        todaySummary.innerHTML = `
+            <h3>Dagens trafikk (${todayKey})</h3>
+            <strong>Sidevisninger:</strong> ${todayCounts.page_view}<br>
+            <strong>PWA installert:</strong> ${todayCounts.pwa_installed}<br>
+            <strong>Python-kjøringer:</strong> ${todayCounts.run_python}<br>
+            <strong>Turtle-kjøringer:</strong> ${todayCounts.turtle_run}
+        `;
+        summaryDiv.appendChild(todaySummary);
+    }
+
+    loadStats().catch(error => {
+        console.error('Feil ved lasting av logs:', error);
+        document.getElementById('logsBody').innerHTML = '<tr><td colspan="4">Kunne ikke laste loggdata. Sjekk at log/list.php og loggfilene finnes.</td></tr>';
+        document.getElementById('summary').innerHTML = '<p>Kunne ikke laste loggdata.</p>';
+    });
+    </script>
+</body>
+</html>
