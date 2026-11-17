@@ -191,10 +191,41 @@ while time() - start < tid:
     else:
         print("Feil")
 print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
-        { navn: "Plassholder 3", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Gjett tallet", kode:
+`import random
+
+hemmelig = random.randint(1, 100)
+forsok = 0
+gjett = 0
+
+while gjett != hemmelig:
+    gjett = int(input("Gjett et tall mellom 1 og 100: "))
+    forsok = forsok + 1
+    if gjett < hemmelig:
+        print("For lavt!")
+    elif gjett > hemmelig:
+        print("For høyt!")
+
+print("Riktig! Du brukte", forsok, "forsøk")` },
+        { navn: "Gjett regelen", kode:
+`import random
+
+a = random.randint(1, 5)
+b = random.randint(0, 10)
+
+print("Jeg har en hemmelig regel. Skriv et tall, så får du svaret!")
+
+for i in range(5):
+    x = int(input("Ditt tall: "))
+    print("Svar:", a * x + b)
+
+gang = int(input("Hvilket tall ganger jeg med? "))
+pluss = int(input("Hvilket tall legger jeg til? "))
+
+if gang == a and pluss == b:
+    print("Riktig! Du knakk koden!")
+else:
+    print("Nesten! Regelen var: ganger med", a, "og legger til", b)` },
         { navn: "Plassholder 4", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 5", kode:
