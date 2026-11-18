@@ -16,7 +16,7 @@ EKSEMPLER["6. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Negative tall", eksempler: [
+    { emne: "Plangeometri", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -28,7 +28,7 @@ EKSEMPLER["6. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Vinkler og figurer", eksempler: [
+    { emne: "Sirkelen", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -40,7 +40,7 @@ EKSEMPLER["6. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Sentralmål", eksempler: [
+    { emne: "Romgeometri", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -52,7 +52,7 @@ EKSEMPLER["6. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Budsjett og regnskap", eksempler: [
+    { emne: "Variabler og formler", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:

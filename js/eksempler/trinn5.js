@@ -4,7 +4,7 @@
 // `for i in range(1, 11):
 //     print(i, "* 7 =", i * 7)` },
 EKSEMPLER["5. trinn"] = [
-    { emne: "Tall og regning", eksempler: [
+    { emne: "4 regnearter", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -16,7 +16,7 @@ EKSEMPLER["5. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Mønster og tallfølger", eksempler: [
+    { emne: "Brøk", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -28,7 +28,7 @@ EKSEMPLER["5. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Omkrets og areal", eksempler: [
+    { emne: "Sannsynlighet", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -40,7 +40,7 @@ EKSEMPLER["5. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Måling og enheter", eksempler: [
+    { emne: "Likninger", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:
@@ -52,7 +52,7 @@ EKSEMPLER["5. trinn"] = [
         { navn: "Plassholder 5", kode:
 `# Her kommer det kode etterhvert` },
     ]},
-    { emne: "Tabeller og diagram", eksempler: [
+    { emne: "Økonomi", eksempler: [
         { navn: "Plassholder 1", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 2", kode:

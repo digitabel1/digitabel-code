@@ -80,14 +80,23 @@ print(areal)` },
         { navn: "Pytagoras", kode:
 `# Flere aktiviteter innen pytagoras; se https://digitabel.org/matematikk/9-trinn/pytagoras/
 # Regne ut ukjent hypotenus
-
 from math import sqrt
 
-k1 = 12
-k2 = 16
-hyp = sqrt(k1**2 + k2**2)
+katet_a = 3
+katet_b = 4
+hypotenus = 0
 
-print("Ukjent hypotenus:", hyp)` },
+if hypotenus == 0:
+    hypotenus = sqrt(katet_a**2 + katet_b**2)
+    print("Hypotenus:", hypotenus)
+    
+if katet_a == 0:
+    katet_a = sqrt(hypotenus**2 - katet_b**2)
+    print("Katet a:", katet_a )
+    
+if katet_b == 0:
+    katet_b = sqrt(hypotenus**2 - katet_a**2)
+    print("Katet b:", katet_b)` },
         { navn: "Vinkelsum", kode:
 `# Flere aktiviteter innen plangeometri; se https://digitabel.org/matematikk/9-trinn/plangeometri/
 # Beregne vinkelsum i n-kanter
@@ -164,7 +173,9 @@ print("Forside og bakside:", forside_og_bakside, "cm²")
 print("Sidene:", sidene, "cm²")
 print("Overflateareal:", overflate, "cm²")` },
         { navn: "Volum av pyramide", kode:
-`valg = input("Grunnflate? (k = kvadrat, r = rektangel, t = trekant): ")
+`# Regne ut volum av pyramide
+
+valg = input("Grunnflate? (k = kvadrat, r = rektangel, t = trekant): ")
 
 if valg == "k":
     s = float(input("Sidekant (cm): "))
@@ -181,7 +192,7 @@ elif valg == "t":
 hoyde = float(input("Pyramidens høyde (cm): "))
 volum = grunnflate * hoyde / 3
 
-print(f"Volumet er {volum:.1f} cm³")` },
+print("Volumet er", volum, "cm³")` },
         { navn: "Arkimedes", kode:
 `# Arkimedes oppdagelse
 from math import pi
@@ -297,12 +308,13 @@ elif trekk_1 == "s" and trekk_2 == "h" or trekk_1 == "h" and trekk_2 == "s":
 else:
     print("2 hvite")` },
         { navn: "Lotto", kode:
-`from random import sample
+`# Spill en rask lotto, og se hvor mange riktige du får
+from random import sample
 
 min_rekke = [3, 8, 12, 19, 23, 28, 31]
 
-tall = sample(range(1, 35), 10)
-vinnertall = sorted(tall[:7])
+tall = sample(range(1, 35), 7)
+vinnertall = sorted(tall)
 
 riktige = 0
 for t in min_rekke:
@@ -315,10 +327,81 @@ print("Vinnertall:  ", vinnertall)
 print("Du fikk", riktige, "rette.")` },
     ]},
     { emne: "Annet", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Gangetabellen", kode:
+`# Vi tester hvor gode vi er i gangetabellen
+# Programmet sjekker hvor mange riktige svar du klarer på 60 sek
+# Jeg klarte 31, men jeg er en gammel gubbe ;-)
+
+from random import randint
+from time import time
+
+antall_riktig = 0
+tid = 60
+
+print("Du skal svare på så mange regnestykker du klarer på 60 sekunder.")
+print("Tilslutt får du beskjed om hvor mange riktige svar du hadde.")
+print("Trykk 'ENTER' når du er klar!")
+
+input()
+start = time()
+
+while time() - start < tid:
+    tall_1 = randint(1, 10)
+    tall_2 = randint(1, 10)
+    fasit = str(tall_1 * tall_2)
+    oppgave = (str(tall_1) + " * " + str(tall_2) + " = ")
+    svar = input(oppgave)
+    if svar == fasit:
+        print("Riktig!")
+        antall_riktig += 1
+    else:
+        print("Feil")
+print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
+        { navn: "Spill 21", kode:
+`# Vi spiller 21
+from random import randint
+ 
+print("Vi spiller 21, det er om å gjøre å ikke bli den som må si '21'.")
+print("Du kan velge å telle 1 eller 2 tall videre. Vi starter på 0!")
+print("Du begynner!")
+ 
+tallet = 0
+spiller_tur = True
+ 
+while tallet < 21:
+    print("---")
+    if spiller_tur:
+        valg = input("Vil du telle 1 eller 2 videre?")
+        if valg == "1":
+            print("Du teller:")
+            print("->", tallet + 1)
+            tallet = tallet + 1
+        else:
+            print("Du teller:")
+            print("->", tallet + 1, tallet + 2)
+            tallet = tallet + 2
+        spiller_tur = False
+    else:
+        if tallet in [0, 3, 6, 9, 12, 15, 18]:
+            valg = 2
+        elif tallet in [1, 4, 7, 10, 13, 16, 19]:
+            valg = 1
+        else:
+            valg = randint(1, 2)
+        if valg == 1:
+            print("Maskinen teller:")
+            print("->", tallet + 1)
+            tallet = tallet + 1
+        else:
+            print("Maskinen teller:")
+            print("->", tallet + 1, tallet + 2)
+            tallet = tallet + 2
+        spiller_tur = True           
+
+if spiller_tur:
+    print("Du vant")
+else:
+    print("Du tapte")` },
         { navn: "Plassholder 3", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 4", kode:

@@ -288,10 +288,52 @@ print("Innbetaling totalt: kr", totalt)` },
 `# Her kommer det kode etterhvert` },
     ]},
     { emne: "Annet", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Gangetabellen", kode:
+`# Vi tester hvor gode vi er i gangetabellen
+# Programmet sjekker hvor mange riktige svar du klarer på 60 sek
+# Jeg klarte 31, men jeg er en gammel gubbe ;-)
+
+from random import randint
+from time import time
+
+antall_riktig = 0
+tid = 60
+
+print("Du skal svare på så mange regnestykker du klarer på 60 sekunder.")
+print("Tilslutt får du beskjed om hvor mange riktige svar du hadde.")
+print("Trykk 'ENTER' når du er klar!")
+
+input()
+start = time()
+
+while time() - start < tid:
+    tall_1 = randint(1, 10)
+    tall_2 = randint(1, 10)
+    fasit = str(tall_1 * tall_2)
+    oppgave = (str(tall_1) + " * " + str(tall_2) + " = ")
+    svar = input(oppgave)
+    if svar == fasit:
+        print("Riktig!")
+        antall_riktig += 1
+    else:
+        print("Feil")
+print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
+        { navn: "Reaksjonstid", kode:
+`# Vi lager en liten reaksjonstester med python
+from time import sleep, time
+from random import randint
+
+print("Velkommen til min reaksjonstester!")
+print("Trykk 'enter' for å starte testen...")
+input()
+print("Når jeg sier fra, så skal du trykke på 'enter' så fort du kan!")
+pause = randint(3, 7)
+sleep(pause)
+start = time()
+input("TRYKK 'ENTER' NÅ!!!")
+stop = time()
+tid = round((stop - start) * 100)
+print("Din reaksjonstid:", tid, "hundredels sekund")` },
         { navn: "Plassholder 3", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 4", kode:
