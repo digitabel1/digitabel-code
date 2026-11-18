@@ -23,8 +23,12 @@ print(forhold)
 print()
 print(ny_teller, "/", ny_nevner)
 print(ny_forhold)` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Brøk og desimaltall", kode:
+`# brøk og desimltall
+nevner = 10
+for teller in range(1,nevner + 1):
+    forhold = teller/nevner
+    print(teller, "/", nevner,"->",forhold )` },
         { navn: "Plassholder 3", kode:
 `# Her kommer det kode etterhvert` },
     ]},

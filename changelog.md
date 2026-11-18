@@ -11,6 +11,7 @@
 * Lagt til en del eksempler
 * Lagt til "siste 30 dager" i stats
 * Fikset: service workeren kunne fylle ny cache med gamle filer fra nettleserens HTTP-cache (ny index.html, men gamle eksempler). Henter nå alltid ferske filer ved installasjon (`cache: "reload"`)
+* Lagt til knapp som viser til Online Kurs
 
 
 ## 0.62

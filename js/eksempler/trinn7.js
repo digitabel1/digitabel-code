@@ -35,8 +35,20 @@ while time() - start < tid:
     else:
         print("Feil")
 print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Desimaltall", kode:
+`# Programmet øker tallet med intervallet du velger under step.
+# Hvis du bruker hundredeler (0.01), må du endre round til 2 desimaler.
+step = 0.01
+tall = 0.0
+
+print("Trykk enter for å øke tallet med", step, "eller s for å stoppe programmet")
+print(tall)
+
+while tall < 5:
+    if input() == "s":
+        break
+    tall += step
+    print(round(tall, 2))` },
         { navn: "Plassholder 3", kode:
 `# Her kommer det kode etterhvert` },
     ]},
@@ -68,14 +80,45 @@ ant_skonummer = len(skonummer)
 gjennomsnitt = sum_skonummer / ant_skonummer
 
 print("Gjennomsnitt:", gjennomsnitt)` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
-        { navn: "Plassholder 3", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Linjediagram", kode:
+`# Lage linjediagram med python
+from matplotlib import pyplot
+
+dager = ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"]
+timer = [2, 3, 2.5, 2.5, 4, 6, 5]
+
+pyplot.plot(dager, timer)
+pyplot.title("Min skjermtid gjennom uka")
+pyplot.xlabel("Dag")
+pyplot.ylabel("Timer")
+pyplot.grid()` },
+        { navn: "Stolpediagram", kode:
+`from matplotlib import pyplot
+
+aktiviteter = ["YouTube", "Spill", "Snapchat", "TikTok", "Lekser"]
+timer = [6, 8, 4, 5, 2]
+
+pyplot.bar(aktiviteter, timer)
+pyplot.title("Hva bruker jeg skjermtiden på? (hele uka)")
+pyplot.xlabel("Aktivitet")
+pyplot.ylabel("Timer")` },
     ]},
     { emne: "Økonomi", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Priser", kode:
+`# Gå inn på en nettside der du kan handle dagligvarer.
+# Finn en vare, noter prisen per enhet og velg hvor mange du vil kjøpe.
+
+print("----------------Velkommen til butikken----------------")
+print("Hva vil du handle?")
+
+vare = input("Tast inn varetype: ")
+antall = float(input("Tast inn antall: "))
+enhetspris = float(input("Tast inn enhetspris: "))
+
+totalpris = round(antall * enhetspris, 2)
+
+print("Du har handlet:", antall, vare)
+print("Totalpris", totalpris)` },
         { navn: "Plassholder 2", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 3", kode:

@@ -4,7 +4,7 @@
 const EKSEMPEL_FANER = ["5. trinn", "6. trinn", "7. trinn", "8. trinn", "9. trinn", "10. trinn", "Mer"];
 const EKSEMPLER = {};
 
-// Åpne modalen: bygg fanene første gang, og vis alltid "Mer"-fanen
+// Åpne modalen: bygg fanene første gang, og vis sist valgte fane (default "Mer")
 function visEksempelModal() {
     const faneRad = document.getElementById('examples-tabs');
     if (!faneRad.hasChildNodes()) {
@@ -19,12 +19,14 @@ function visEksempelModal() {
         });
     }
 
-    visEksempelFane('Mer');
+    const sisteFane = localStorage.getItem('pyted_examples_tab');
+    visEksempelFane(EKSEMPEL_FANER.includes(sisteFane) ? sisteFane : 'Mer');
     document.getElementById('examples-modal').style.display = 'block';
 }
 
 // Vis emnene og eksempelknappene for én fane
 function visEksempelFane(fane) {
+    localStorage.setItem('pyted_examples_tab', fane);
     document.querySelectorAll('#examples-tabs .examples-tab').forEach(knapp => {
         const aktiv = knapp.dataset.fane === fane;
         knapp.classList.toggle('active', aktiv);
