@@ -852,6 +852,20 @@ body.dark #turtle-button .turtle-img {
     font-size: 0.5em;
 }
 
+/* Liten pil oppe til høyre på Kurs-ikonet, samme idé som på Turtle-knappen */
+#course-button .course-icon {
+    position: relative;
+    display: inline-block;
+    line-height: 1;
+}
+
+#course-button .course-ext {
+    position: absolute;
+    top: -3px;
+    right: -11px;
+    font-size: 0.5em;
+}
+
 /* Kjør-knappen helt til høyre i topframe: lav knapp med label til høyre for ikonet,
    og grønn bakgrunn så den skiller seg ut */
 .topframe #run-button {
