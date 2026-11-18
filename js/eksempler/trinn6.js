@@ -29,8 +29,26 @@ nevner = 10
 for teller in range(1,nevner + 1):
     forhold = teller/nevner
     print(teller, "/", nevner,"->",forhold )` },
-        { navn: "Plassholder 3", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Tilfeldig faktor", kode:
+`# Programmet utvider brøken med en tilfeldig faktor mellom 1 og 10. Du skal gjette hvilken faktor som er brukt.
+from random import randint
+teller = 2
+nevner = 5
+print(teller, "/", nevner, "=")
+
+faktor = randint(1, 10)
+teller = teller * faktor
+nevner = nevner * faktor
+
+print(teller, "/", nevner, "=")
+print(teller / nevner)
+
+svar = int(input("Gjett hva faktoren er: "))
+
+if svar == faktor:
+    print("Riktig, brøken ble utvidet med", faktor)
+else:
+    print("Feil, brøken ble utvidet med", faktor)` },
     ]},
     { emne: "Plangeometri", eksempler: [
         { navn: "Rektangel", kode:
@@ -88,8 +106,28 @@ while time() - start < tid:
     else:
         print("Feil")
 print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
-        { navn: "Plassholder 2", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Differanse", kode:
+`# Programmet lager to tilfeldige tall og ber deg regne ut differansen. Det sjekker om svaret ditt er riktig.
+
+from random import randint
+ant = 10
+riktige = 0
+for i in range(ant):
+    ledd_1 = randint(40, 60)
+    ledd_2 = randint(1, 40)
+
+    differanse = ledd_1 - ledd_2
+
+    print(ledd_1, "-", ledd_2)
+
+    svar = int(input("Skriv svar: "))
+
+    if svar == differanse:
+        print("Riktig svar!!")
+        riktige = riktige + 1
+    else:
+        print("Feil, riktig svar er:", differanse)
+print("Antall riktige:", riktige)` },
         { navn: "Plassholder 3", kode:
 `# Her kommer det kode etterhvert` },
     ]},

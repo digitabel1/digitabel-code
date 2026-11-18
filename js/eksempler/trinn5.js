@@ -62,8 +62,24 @@ prosent = desimalverdi * 100
 print("Brøk:", teller, "/", nevner)
 print("Desimaltall:", desimalverdi)
 print("Prosent:", prosent, "%")` },
-        { navn: "Plassholder 3", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Desimal -> brøk", kode:
+`# Programmet viser en tilfeldig desimalverdi. Du skal finne en brøk som har samme verdi.
+
+from random import randint
+
+verdi = randint(1, 10) / 10
+
+print("Skriv inn en brøk som har verdi:", verdi)
+
+teller = int(input("teller: "))
+nevner = int(input("nevner: "))
+
+verdi_svar = teller / nevner
+
+if verdi_svar == verdi:
+    print("Riktig!", teller, "/", nevner, "=", verdi)
+else:
+    print("Feil!")` },
        
     ]},
     { emne: "Sannsynlighet", eksempler: [

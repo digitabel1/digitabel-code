@@ -49,8 +49,22 @@ while tall < 5:
         break
     tall += step
     print(round(tall, 2))` },
-        { navn: "Plassholder 3", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Negative tall", kode:
+`# Vi jobber med differanse og negative tall
+
+from random import randint
+
+for i in range(10):
+    tall_a = randint(-10, 10)
+    tall_b = randint(-10, 10)
+    print(tall_a, "-", tall_b)
+
+    fasit = tall_a - tall_b
+    svar = int(input("Svar ->"))
+    if svar == fasit:
+        print("Riktig")
+    else:
+        print("Feil, riktig svar er:", fasit)` },
     ]},
     { emne: "Regneuttrykk", eksempler: [
         { navn: "Plassholder 1", kode:
@@ -61,8 +75,23 @@ while tall < 5:
 `# Her kommer det kode etterhvert` },
     ]},
     { emne: "Algebra", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Likning (alder)", kode:
+`# Emma er dobbelt så gammel som Noah.
+# Oliver er 2 år yngre enn Noah.
+# Til sammen er de 102 år.
+# Programmet finner ut hvor gamle de tre er.
+
+# Bruk koden til å lage din egen oppgave
+
+for x in range(1, 101):
+    noah = x
+    emma = 2 * x
+    oliver = x - 2
+
+    tot = emma + noah + oliver
+
+    if tot == 102:
+        print("Emma:", emma, "Noah:", noah, "Oliver:", oliver)` },
         { navn: "Plassholder 2", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 3", kode:
