@@ -389,6 +389,22 @@ async function runPython() {
     } catch (err) {
         console.error(err);
     }
+
+    // Første import av matplotlib.pyplot er treg (bygger bl.a. font-cache) og kan alene ta over
+    // TIME_LIMIT_MS på svake maskiner. Importer den derfor her, før tidsvakten slås på, slik at
+    // elevens egen import bare henter den fra sys.modules. Feiler importen, får eleven feilen
+    // som vanlig fra sin egen import.
+    if (/^\s*(?:import|from)\s+matplotlib\b/m.test(code) &&
+        !pyodide.runPython(`import sys; "matplotlib.pyplot" in sys.modules`)) {
+        loadingText.textContent = "Laster bibliotek (matplotlib)...";
+        // La nettleseren tegne opp teksten før den synkrone importen blokkerer fanen
+        await new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+        try {
+            pyodide.runPython("import matplotlib.pyplot");
+        } catch (err) {
+            console.error(err);
+        }
+    }
     loadingText.textContent = "Kjører kode...";
 
     // Transformer input()/sleep()-kall til async __js_*__() og pakk inn i async def,

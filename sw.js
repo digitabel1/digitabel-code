@@ -1,4 +1,4 @@
-const CACHE_NAME = "code-v0.63.9";
+const CACHE_NAME = "code-v0.63.10";
 // Egen cache for Pyodide (kjerne + pakker, ca. 50 MB), slik at den IKKE slettes hver gang
 // CACHE_NAME bumpes. Bytt navn her bare hvis Pyodide oppgraderes til ny versjon.
 const PYODIDE_CACHE = "pyodide-v0.25.0";
