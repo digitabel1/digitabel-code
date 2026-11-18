@@ -6,7 +6,8 @@
 EKSEMPLER["8. trinn"] = [
     { emne: "Tall", eksempler: [
         { navn: "Regnerekkefølge", kode:
-`from random import randint
+`# Vi lager tilfeldige oppgaver
+from random import randint
 
 for i in range(5):
     a = randint(1, 10)
