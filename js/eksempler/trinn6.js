@@ -5,8 +5,24 @@
 //     print(i, "* 7 =", i * 7)` },
 EKSEMPLER["6. trinn"] = [
     { emne: "Brøk og prosent", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Likeverdige brøker", kode:
+`# likeverdige brøker
+
+faktor = 2
+
+teller = 1
+nevner = 2
+forhold = teller/nevner
+
+ny_teller = teller * faktor
+ny_nevner = nevner * faktor
+ny_forhold = ny_teller / ny_nevner
+
+print(teller, "/", nevner)
+print(forhold)
+print()
+print(ny_teller, "/", ny_nevner)
+print(ny_forhold)` },
         { navn: "Plassholder 2", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 3", kode:

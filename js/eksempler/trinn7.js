@@ -57,8 +57,17 @@ print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
 `# Her kommer det kode etterhvert` },
     ]},
     { emne: "Statistikk", eksempler: [
-        { navn: "Plassholder 1", kode:
-`# Her kommer det kode etterhvert` },
+        { navn: "Gjennomsnitt", kode:
+`# Vi regner ut et gjennomsnitt
+
+skonummer = [38, 46, 44, 41, 39, 44]
+
+sum_skonummer = sum(skonummer)
+ant_skonummer = len(skonummer)
+
+gjennomsnitt = sum_skonummer / ant_skonummer
+
+print("Gjennomsnitt:", gjennomsnitt)` },
         { navn: "Plassholder 2", kode:
 `# Her kommer det kode etterhvert` },
         { navn: "Plassholder 3", kode:
