@@ -38,7 +38,7 @@ print("Du klarte", antall_riktig, "riktige på", tid, "sekunder!")` },
         { navn: "Desimaltall", kode:
 `# Programmet øker tallet med intervallet du velger under step.
 # Hvis du bruker hundredeler (0.01), må du endre round til 2 desimaler.
-step = 0.01
+step = 0.1
 tall = 0.0
 
 print("Trykk enter for å øke tallet med", step, "eller s for å stoppe programmet")
@@ -48,7 +48,7 @@ while tall < 5:
     if input() == "s":
         break
     tall += step
-    print(round(tall, 2))` },
+    print(round(tall, 1))` },
         { navn: "Negative tall", kode:
 `# Vi jobber med differanse og negative tall
 

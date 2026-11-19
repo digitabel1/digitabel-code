@@ -79,7 +79,7 @@ verdi_svar = teller / nevner
 if verdi_svar == verdi:
     print("Riktig!", teller, "/", nevner, "=", verdi)
 else:
-    print("Feil!")` },
+    print("Feil, verdien av din brøk er:", teller / nevner)` },
        
     ]},
     { emne: "Sannsynlighet", eksempler: [
